@@ -131,6 +131,8 @@
       loginBtn.addEventListener("click", () => {
         const userAnswer = input.value.trim();
         if (userAnswer === correctAnswer) {
+          const now = new Date().getTime();
+          localStorage.setItem("access_granted", now);
           feedback.style.color = "green";
           feedback.textContent = "💖 Yay! Loading your surprise...";
           setTimeout(() => {

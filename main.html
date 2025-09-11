@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Our Love Story | Happy Birthday My Love</title>
+    <script>
+      const accessTime = localStorage.getItem("access_granted");
+      const now = new Date().getTime();
+      const tenMinutes = 1 * 60 * 1000;
+
+      if (!accessTime || now - accessTime > tenMinutes) {
+        localStorage.removeItem("access_granted");
+        window.location.href = "index.html"; // redirect if no access or expired
+      }
+    </script>
+
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css"
       rel="stylesheet"

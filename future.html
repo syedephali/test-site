@@ -1,643 +1,829 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Our Future Together | Our Love Story</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <script>
+      const accessTime = localStorage.getItem("access_granted");
+      const now = new Date().getTime();
+      const tenMinutes = 10 * 60 * 1000;
+
+      if (!accessTime || now - accessTime > tenMinutes) {
+        localStorage.removeItem("access_granted");
+        window.location.href = "index.html"; // redirect if no access or expired
+      }
+    </script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --primary: #fd2d78;
-            --secondary: #5c67de;
-            --accent: #ffaac9;
+      :root {
+        --primary: #fd2d78;
+        --secondary: #5c67de;
+        --accent: #ffaac9;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
+        min-height: 100vh;
+        color: #333;
+        overflow-x: hidden;
+      }
+
+      .heading-font {
+        font-family: "Playfair Display", serif;
+      }
+
+      .future-card {
+        transition: all 0.3s ease;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .future-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .countdown-item {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .countdown-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .countdown-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .vision-board {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .vision-item {
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        height: 200px;
+        background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        transition: all 0.3s ease;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .vision-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .vision-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 1rem;
+        transform: translateY(100%);
+        transition: all 0.3s ease;
+      }
+
+      .vision-item:hover .vision-content {
+        transform: translateY(0);
+      }
+
+      .heartbeat {
+        animation: heartbeat 1.5s ease-in-out infinite both;
+      }
+
+      @keyframes heartbeat {
+        from {
+          transform: scale(1);
+          transform-origin: center center;
+          animation-timing-function: ease-out;
         }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
-            min-height: 100vh;
-            color: #333;
-            overflow-x: hidden;
+        10% {
+          transform: scale(0.91);
+          animation-timing-function: ease-in;
         }
-        
-        .heading-font {
-            font-family: 'Playfair Display', serif;
+        17% {
+          transform: scale(0.98);
+          animation-timing-function: ease-out;
         }
-        
-        .future-card {
-            transition: all 0.3s ease;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        33% {
+          transform: scale(0.87);
+          animation-timing-function: ease-in;
         }
-        
-        .future-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        45% {
+          transform: scale(1);
+          animation-timing-function: ease-out;
         }
-        
-        .countdown-item {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+      }
+
+      .floating {
+        animation-name: floating;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translate(0, 0px);
         }
-        
-        .countdown-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        50% {
+          transform: translate(0, 15px);
         }
-        
-        .countdown-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
+        100% {
+          transform: translate(0, -0px);
         }
-        
-        .vision-board {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+      }
+
+      .timeline {
+        position: relative;
+        padding: 2rem 0;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        border-radius: 2px;
+      }
+
+      .timeline-item {
+        width: 50%;
+        padding: 1.5rem 2rem;
+        position: relative;
+        margin-bottom: 2rem;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease;
+      }
+
+      .timeline-item:nth-child(odd) {
+        left: 0;
+        padding-right: 4rem;
+      }
+
+      .timeline-item:nth-child(even) {
+        left: 50%;
+        padding-left: 4rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        top: 2rem;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        border: 4px solid var(--primary);
+        box-shadow: 0 0 0 3px white;
+      }
+
+      .timeline-item:nth-child(odd)::before {
+        right: -10px;
+      }
+
+      .timeline-item:nth-child(even)::before {
+        left: -10px;
+      }
+
+      .timeline-content {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .timeline-content:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      }
+
+      .visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .nav-btn {
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Mobile menu animation */
+      #mobile-menu {
+        transition: all 0.3s ease;
+        max-height: 0;
+        overflow: hidden;
+      }
+
+      #mobile-menu.open {
+        max-height: 300px;
+      }
+
+      /* Loading animation for countdown */
+      .countdown-loading {
+        opacity: 0.7;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 0.7;
         }
-        
-        .vision-item {
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            height: 200px;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-            transition: all 0.3s ease;
-            background-size: cover;
-            background-position: center;
+        50% {
+          opacity: 1;
         }
-        
-        .vision-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        100% {
+          opacity: 0.7;
         }
-        
-        .vision-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 1rem;
-            transform: translateY(100%);
-            transition: all 0.3s ease;
-        }
-        
-        .vision-item:hover .vision-content {
-            transform: translateY(0);
-        }
-        
-        .heartbeat {
-            animation: heartbeat 1.5s ease-in-out infinite both;
-        }
-        
-        @keyframes heartbeat {
-            from {
-                transform: scale(1);
-                transform-origin: center center;
-                animation-timing-function: ease-out;
-            }
-            10% {
-                transform: scale(0.91);
-                animation-timing-function: ease-in;
-            }
-            17% {
-                transform: scale(0.98);
-                animation-timing-function: ease-out;
-            }
-            33% {
-                transform: scale(0.87);
-                animation-timing-function: ease-in;
-            }
-            45% {
-                transform: scale(1);
-                animation-timing-function: ease-out;
-            }
-        }
-        
-        .floating { 
-            animation-name: floating;
-            animation-duration: 3s;
-            animation-iteration-count: infinite;
-            animation-timing-function: ease-in-out;
-        }
-        
-        @keyframes floating {
-            0% { transform: translate(0, 0px); }
-            50% { transform: translate(0, 15px); }
-            100% { transform: translate(0, -0px); } 
-        }
-        
-        .timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-        
+      }
+
+      /* Improved focus states for accessibility */
+      a:focus,
+      button:focus {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+
+      /* Back to top button */
+      .back-to-top {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: var(--primary);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 100;
+      }
+
+      .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .back-to-top:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      @media (max-width: 768px) {
         .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 100%;
-            background: var(--primary);
-            border-radius: 2px;
+          left: 30px;
         }
-        
+
         .timeline-item {
-            width: 50%;
-            padding: 1.5rem 2rem;
-            position: relative;
-            margin-bottom: 2rem;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease;
+          width: 100%;
+          padding-left: 70px;
+          padding-right: 25px;
+          left: 0;
         }
-        
-        .timeline-item:nth-child(odd) {
-            left: 0;
-            padding-right: 4rem;
-        }
-        
+
         .timeline-item:nth-child(even) {
-            left: 50%;
-            padding-left: 4rem;
+          left: 0;
+          padding-left: 70px;
+          padding-right: 25px;
         }
-        
+
         .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: 2rem;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: white;
-            border: 4px solid var(--primary);
-            box-shadow: 0 0 0 3px white;
+          left: 20px;
         }
-        
-        .timeline-item:nth-child(odd)::before {
-            right: -10px;
-        }
-        
+
+        .timeline-item:nth-child(odd)::before,
         .timeline-item:nth-child(even)::before {
-            left: -10px;
+          left: 20px;
         }
-        
-        .timeline-content {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+
+        .countdown-number {
+          font-size: 1.8rem;
         }
-        
-        .timeline-content:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+
+        .vision-board {
+          grid-template-columns: 1fr;
         }
-        
-        .visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .nav-btn {
-            transition: all 0.3s ease;
-        }
-        
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Mobile menu animation */
-        #mobile-menu {
-            transition: all 0.3s ease;
-            max-height: 0;
-            overflow: hidden;
-        }
-        
-        #mobile-menu.open {
-            max-height: 300px;
-        }
-        
-        /* Loading animation for countdown */
-        .countdown-loading {
-            opacity: 0.7;
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
-        }
-        
-        /* Improved focus states for accessibility */
-        a:focus, button:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-        
-        /* Back to top button */
-        .back-to-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--primary);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-        }
-        
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .back-to-top:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        @media (max-width: 768px) {
-            .timeline::before {
-                left: 30px;
-            }
-            
-            .timeline-item {
-                width: 100%;
-                padding-left: 70px;
-                padding-right: 25px;
-                left: 0;
-            }
-            
-            .timeline-item:nth-child(even) {
-                left: 0;
-                padding-left: 70px;
-                padding-right: 25px;
-            }
-            
-            .timeline-item::before {
-                left: 20px;
-            }
-            
-            .timeline-item:nth-child(odd)::before,
-            .timeline-item:nth-child(even)::before {
-                left: 20px;
-            }
-            
-            .countdown-number {
-                font-size: 1.8rem;
-            }
-            
-            .vision-board {
-                grid-template-columns: 1fr;
-            }
-        }
+      }
     </style>
-</head>
-<body class="antialiased">
+  </head>
+  <body class="antialiased">
     <!-- Navigation -->
     <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <a href="main.html" class="text-xl font-bold text-pink-600"><i class="fas fa-heart mr-2"></i> Our Love Story</a>
-                <div class="hidden md:flex space-x-6">
-                    <a href="main.html" class="text-gray-600 hover:text-pink-600 transition-colors">Home</a>
-                    <a href="story.html" class="text-gray-600 hover:text-pink-600 transition-colors">Our Story</a>
-                    <a href="memories.html" class="text-gray-600 hover:text-pink-600 transition-colors">Memories</a>
-                    <a href="love-meter.html" class="text-gray-600 hover:text-pink-600 transition-colors">Love Meter</a>
-                    <a href="future.html" class="text-pink-600 font-semibold">Future</a>
-                    <a href="messages.html" class="text-gray-600 hover:text-pink-600 transition-colors">Messages</a>
-                </div>
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-600 p-2 rounded-full hover:bg-pink-50 transition-colors">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
-            </div>
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <a href="main.html" class="text-xl font-bold text-pink-600"
+            ><i class="fas fa-heart mr-2"></i> Our Love Story</a
+          >
+          <div class="hidden md:flex space-x-6">
+            <a
+              href="main.html"
+              class="text-gray-600 hover:text-pink-600 transition-colors"
+              >Home</a
+            >
+            <a
+              href="story.html"
+              class="text-gray-600 hover:text-pink-600 transition-colors"
+              >Our Story</a
+            >
+            <a
+              href="memories.html"
+              class="text-gray-600 hover:text-pink-600 transition-colors"
+              >Memories</a
+            >
+            <a
+              href="love-meter.html"
+              class="text-gray-600 hover:text-pink-600 transition-colors"
+              >Love Meter</a
+            >
+            <a href="future.html" class="text-pink-600 font-semibold">Future</a>
+            <a
+              href="messages.html"
+              class="text-gray-600 hover:text-pink-600 transition-colors"
+              >Messages</a
+            >
+          </div>
+          <div class="md:hidden">
+            <button
+              id="mobile-menu-button"
+              class="text-gray-600 p-2 rounded-full hover:bg-pink-50 transition-colors"
+            >
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
         </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden px-4 pt-2 pb-4 bg-white border-t">
-            <div class="flex flex-col space-y-3">
-                <a href="main.html" class="text-gray-600 hover:text-pink-600 py-2 transition-colors">Home</a>
-                <a href="story.html" class="text-gray-600 hover:text-pink-600 py-2 transition-colors">Our Story</a>
-                <a href="memories.html" class="text-gray-600 hover:text-pink-600 py-2 transition-colors">Memories</a>
-                <a href="love-meter.html" class="text-gray-600 hover:text-pink-600 py-2 transition-colors">Love Meter</a>
-                <a href="future.html" class="text-pink-600 font-semibold py-2">Future</a>
-                <a href="messages.html" class="text-gray-600 hover:text-pink-600 py-2 transition-colors">Messages</a>
-            </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden px-4 pt-2 pb-4 bg-white border-t">
+        <div class="flex flex-col space-y-3">
+          <a
+            href="main.html"
+            class="text-gray-600 hover:text-pink-600 py-2 transition-colors"
+            >Home</a
+          >
+          <a
+            href="story.html"
+            class="text-gray-600 hover:text-pink-600 py-2 transition-colors"
+            >Our Story</a
+          >
+          <a
+            href="memories.html"
+            class="text-gray-600 hover:text-pink-600 py-2 transition-colors"
+            >Memories</a
+          >
+          <a
+            href="love-meter.html"
+            class="text-gray-600 hover:text-pink-600 py-2 transition-colors"
+            >Love Meter</a
+          >
+          <a href="future.html" class="text-pink-600 font-semibold py-2"
+            >Future</a
+          >
+          <a
+            href="messages.html"
+            class="text-gray-600 hover:text-pink-600 py-2 transition-colors"
+            >Messages</a
+          >
         </div>
+      </div>
     </nav>
 
     <!-- Header Section -->
-    <header class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-16">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold heading-font mb-4">Our Future Together</h1>
-            <p class="text-xl max-w-3xl mx-auto">Dreaming of all the beautiful moments we'll share and the life we'll build together</p>
-        </div>
+    <header
+      class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-16"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold heading-font mb-4">
+          Our Future Together
+        </h1>
+        <p class="text-xl max-w-3xl mx-auto">
+          Dreaming of all the beautiful moments we'll share and the life we'll
+          build together
+        </p>
+      </div>
     </header>
 
     <!-- Countdown Section -->
     <section class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">Counting Down to Forever</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Our journey ahead is filled with exciting milestones to look forward to</p>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-                <div class="countdown-item">
-                    <div class="countdown-number" id="days">0</div>
-                    <div class="text-gray-600">Days</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="hours">0</div>
-                    <div class="text-gray-600">Hours</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="minutes">0</div>
-                    <div class="text-gray-600">Minutes</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="seconds">0</div>
-                    <div class="text-gray-600">Seconds</div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-8">
-                <p class="text-xl text-pink-600 font-semibold" id="countdown-label">Until We Say "I Do"</p>
-                <p class="text-gray-600 mt-2">December 31, 2030 - The day we become husband and wife</p>
-            </div>
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Counting Down to Forever
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Our journey ahead is filled with exciting milestones to look forward
+            to
+          </p>
         </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div class="countdown-item">
+            <div class="countdown-number" id="days">0</div>
+            <div class="text-gray-600">Days</div>
+          </div>
+          <div class="countdown-item">
+            <div class="countdown-number" id="hours">0</div>
+            <div class="text-gray-600">Hours</div>
+          </div>
+          <div class="countdown-item">
+            <div class="countdown-number" id="minutes">0</div>
+            <div class="text-gray-600">Minutes</div>
+          </div>
+          <div class="countdown-item">
+            <div class="countdown-number" id="seconds">0</div>
+            <div class="text-gray-600">Seconds</div>
+          </div>
+        </div>
+
+        <div class="text-center mt-8">
+          <p class="text-xl text-pink-600 font-semibold" id="countdown-label">
+            Until We Say "I Do"
+          </p>
+          <p class="text-gray-600 mt-2">
+            December 31, 2030 - The day we become husband and wife
+          </p>
+        </div>
+      </div>
     </section>
 
     <!-- Future Timeline Section -->
     <section class="py-16 bg-pink-50">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">Our Future Timeline</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">The beautiful journey we have planned together</p>
-            </div>
-            
-            <div class="timeline">
-                <!-- Timeline Item 1 -->
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="text-pink-600 font-semibold"><i class="far fa-calendar-alt mr-2"></i> December 31, 2030</span>
-                        <h3 class="text-xl font-bold mb-2">Our Wedding Day</h3>
-                        <p class="text-gray-700">The day we officially become husband and wife.I cannot wait to see you in that beautiful red saree, standing beside me, holding my hands, our eyes locked, smiling at each other. In that moment, we will know that after all our struggles, we have finally won, and we get to stay together forever.</p>
-                    </div>
-                </div>
-                
-                <!-- Timeline Item 2 -->
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="text-pink-600 font-semibold"><i class="far fa-calendar-alt mr-2"></i> 2031</span>
-                        <h3 class="text-xl font-bold mb-2">Staying Together</h3>
-                        <p class="text-gray-700">Finally we get to stay together as husband and wife.</p>
-                    </div>
-                </div>
-                
-                <!-- Timeline Item 3 -->
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="text-pink-600 font-semibold"><i class="far fa-calendar-alt mr-2"></i> ---</span>
-                        <h3 class="text-xl font-bold mb-2">Buying Our First Home</h3>
-                        <p class="text-gray-700">A place with a big backyard for our future family and a cozy fireplace for winter nights together.</p>
-                    </div>
-                </div>
-                
-                <!-- Timeline Item 4 -->
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="text-pink-600 font-semibold"><i class="far fa-calendar-alt mr-2"></i> ---</span>
-                        <h3 class="text-xl font-bold mb-2">Starting a Family</h3>
-                        <p class="text-gray-700">I can't wait for Anshara to come into this world. I know she will love me more.</p>
-                    </div>
-                </div>
-                
-                <!-- Timeline Item 5 -->
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="text-pink-600 font-semibold"><i class="far fa-calendar-alt mr-2"></i> ---</span>
-                        <h3 class="text-xl font-bold mb-2">European Adventure</h3>
-                        <p class="text-gray-700">Exploring the romantic cities of Paris, Venice, and Barcelona together, creating memories across Europe.</p>
-                    </div>
-                </div>
-                
-                <!-- Timeline Item 6 -->
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="text-pink-600 font-semibold"><i class="far fa-calendar-alt mr-2"></i> ---</span>
-                        <h3 class="text-xl font-bold mb-2">Beach House</h3>
-                        <p class="text-gray-700">A vacation home by the sea where we can escape on weekends and watch sunsets together, with Anshara, and by then, maybe baby Avian too.</p>
-                    </div>
-                </div>
-                
-                <!-- Timeline Item 7 -->
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="text-pink-600 font-semibold"><i class="far fa-calendar-alt mr-2"></i> --- </span>
-                        <h3 class="text-xl font-bold mb-2">Seeing Our Children Grow</h3>
-                        <p class="text-gray-700">Watching our children become amazing adults, just like their mother.</p>
-                    </div>
-                </div>
-                
-                <!-- Timeline Item 8 -->
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="text-pink-600 font-semibold"><i class="far fa-calendar-alt mr-2"></i> --- </span>
-                        <h3 class="text-xl font-bold mb-2">Growing Old Together</h3>
-                        <p class="text-gray-700">Rocking on the porch together, still holding hands after all these years, and remembering our beautiful journey.</p>
-                    </div>
-                </div>
-            </div>
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Our Future Timeline
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            The beautiful journey we have planned together
+          </p>
         </div>
+
+        <div class="timeline">
+          <!-- Timeline Item 1 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="text-pink-600 font-semibold"
+                ><i class="far fa-calendar-alt mr-2"></i> December 31,
+                2030</span
+              >
+              <h3 class="text-xl font-bold mb-2">Our Wedding Day</h3>
+              <p class="text-gray-700">
+                The day we officially become husband and wife.I cannot wait to
+                see you in that beautiful red saree, standing beside me, holding
+                my hands, our eyes locked, smiling at each other. In that
+                moment, we will know that after all our struggles, we have
+                finally won, and we get to stay together forever.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 2 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="text-pink-600 font-semibold"
+                ><i class="far fa-calendar-alt mr-2"></i> 2031</span
+              >
+              <h3 class="text-xl font-bold mb-2">Staying Together</h3>
+              <p class="text-gray-700">
+                Finally we get to stay together as husband and wife.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 3 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="text-pink-600 font-semibold"
+                ><i class="far fa-calendar-alt mr-2"></i> ---</span
+              >
+              <h3 class="text-xl font-bold mb-2">Buying Our First Home</h3>
+              <p class="text-gray-700">
+                A place with a big backyard for our future family and a cozy
+                fireplace for winter nights together.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 4 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="text-pink-600 font-semibold"
+                ><i class="far fa-calendar-alt mr-2"></i> ---</span
+              >
+              <h3 class="text-xl font-bold mb-2">Starting a Family</h3>
+              <p class="text-gray-700">
+                I can't wait for Anshara to come into this world. I know she
+                will love me more.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 5 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="text-pink-600 font-semibold"
+                ><i class="far fa-calendar-alt mr-2"></i> ---</span
+              >
+              <h3 class="text-xl font-bold mb-2">European Adventure</h3>
+              <p class="text-gray-700">
+                Exploring the romantic cities of Paris, Venice, and Barcelona
+                together, creating memories across Europe.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 6 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="text-pink-600 font-semibold"
+                ><i class="far fa-calendar-alt mr-2"></i> ---</span
+              >
+              <h3 class="text-xl font-bold mb-2">Beach House</h3>
+              <p class="text-gray-700">
+                A vacation home by the sea where we can escape on weekends and
+                watch sunsets together, with Anshara, and by then, maybe baby
+                Avian too.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 7 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="text-pink-600 font-semibold"
+                ><i class="far fa-calendar-alt mr-2"></i> ---
+              </span>
+              <h3 class="text-xl font-bold mb-2">Seeing Our Children Grow</h3>
+              <p class="text-gray-700">
+                Watching our children become amazing adults, just like their
+                mother.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 8 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="text-pink-600 font-semibold"
+                ><i class="far fa-calendar-alt mr-2"></i> ---
+              </span>
+              <h3 class="text-xl font-bold mb-2">Growing Old Together</h3>
+              <p class="text-gray-700">
+                Rocking on the porch together, still holding hands after all
+                these years, and remembering our beautiful journey.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Promise Section -->
-    <section class="py-16 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-        <div class="container mx-auto px-4 text-center">
-            <div class="max-w-3xl mx-auto">
-                <div class="text-5xl mb-6 floating">
-                    <i class="fas fa-heart"></i>
-                </div>
-                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-6">My Promise to You</h2>
-                <p class="text-xl italic mb-8">"I, Syed Sowad Ephraim Ali, promise to stand by your side, Marian Polin Baroi, through all of life's adventures, to support your dreams as if they were my own, to love you more each day than I did the day before, and to build with you a future filled with laughter, understanding, and endless love."</p>
-                <div class="flex items-center justify-center">
-                    <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-pink-600 mr-4">
-                        <i class="fas fa-signature"></i>
-                    </div>
-                    <p class="text-lg">Syed Sowad Ephraim Ali</p>
-                </div>
+    <section
+      class="py-16 bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <div class="max-w-3xl mx-auto">
+          <div class="text-5xl mb-6 floating">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-6">
+            My Promise to You
+          </h2>
+          <p class="text-xl italic mb-8">
+            "I, Syed Sowad Ephraim Ali, promise to stand by your side, Marian
+            Polin Baroi, through all of life's adventures, to support your
+            dreams as if they were my own, to love you more each day than I did
+            the day before, and to build with you a future filled with laughter,
+            understanding, and endless love."
+          </p>
+          <div class="flex items-center justify-center">
+            <div
+              class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-pink-600 mr-4"
+            >
+              <i class="fas fa-signature"></i>
             </div>
+            <p class="text-lg">Syed Sowad Ephraim Ali</p>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Call to Action -->
     <section class="py-16 bg-white">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold heading-font mb-6">Continue Our Journey</h2>
-            <p class="text-xl mb-8 max-w-2xl mx-auto">
-                Explore other aspects of our love story
-            </p>
-            <div class="flex flex-wrap gap-4 justify-center">
-                <a href="story.html" class="bg-pink-600 text-white px-6 py-3 rounded-full font-semibold nav-btn">Our Story</a>
-                <a href="memories.html" class="border-2 border-pink-600 text-pink-600 px-6 py-3 rounded-full font-semibold nav-btn">Memories</a>
-                <a href="love-meter.html" class="border-2 border-pink-600 text-pink-600 px-6 py-3 rounded-full font-semibold nav-btn">Love Meter</a>
-            </div>
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold heading-font mb-6">
+          Continue Our Journey
+        </h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">
+          Explore other aspects of our love story
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <a
+            href="story.html"
+            class="bg-pink-600 text-white px-6 py-3 rounded-full font-semibold nav-btn"
+            >Our Story</a
+          >
+          <a
+            href="memories.html"
+            class="border-2 border-pink-600 text-pink-600 px-6 py-3 rounded-full font-semibold nav-btn"
+            >Memories</a
+          >
+          <a
+            href="love-meter.html"
+            class="border-2 border-pink-600 text-pink-600 px-6 py-3 rounded-full font-semibold nav-btn"
+            >Love Meter</a
+          >
         </div>
+      </div>
     </section>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-4 text-center">
-            <h3 class="text-2xl font-bold heading-font mb-4">Forever Yours</h3>
-            <p class="max-w-2xl mx-auto mb-6">"I swear I couldn't love you more than I do right now, and yet I know I will tomorrow."</p>
-            <div class="flex justify-center space-x-6 mb-6">
-                <a href="https://www.facebook.com/heavenly.yaksha001/" class="text-pink-400 hover:text-pink-300 transition-colors"><i class="fab fa-facebook text-2xl"></i></a>
-                <a href="https://www.instagram.com/godposeidon001/" class="text-pink-400 hover:text-pink-300 transition-colors"><i class="fab fa-instagram text-2xl"></i></a>
-            </div>
-            <p class="text-gray-400">Made with <i class="fas fa-heart text-pink-500 heartbeat"></i> for the love of my life</p>
+      <div class="container mx-auto px-4 text-center">
+        <h3 class="text-2xl font-bold heading-font mb-4">Forever Yours</h3>
+        <p class="max-w-2xl mx-auto mb-6">
+          "I swear I couldn't love you more than I do right now, and yet I know
+          I will tomorrow."
+        </p>
+        <div class="flex justify-center space-x-6 mb-6">
+          <a
+            href="https://www.facebook.com/heavenly.yaksha001/"
+            class="text-pink-400 hover:text-pink-300 transition-colors"
+            ><i class="fab fa-facebook text-2xl"></i
+          ></a>
+          <a
+            href="https://www.instagram.com/godposeidon001/"
+            class="text-pink-400 hover:text-pink-300 transition-colors"
+            ><i class="fab fa-instagram text-2xl"></i
+          ></a>
         </div>
+        <p class="text-gray-400">
+          Made with <i class="fas fa-heart text-pink-500 heartbeat"></i> for the
+          love of my life
+        </p>
+      </div>
     </footer>
 
     <!-- Back to Top Button -->
     <div class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
+      <i class="fas fa-arrow-up"></i>
     </div>
 
     <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-            mobileMenu.classList.toggle('open');
-            
-            // Change icon based on menu state
-            const icon = mobileMenuButton.querySelector('i');
-            if (mobileMenu.classList.contains('hidden')) {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            } else {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            }
-        });
-        
-        // Countdown to wedding date (December 31, 2030)
-        const weddingDate = new Date('December 31, 2030 00:00:00').getTime();
-        
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = weddingDate - now;
-            
-            // If the countdown is over
-            if (distance < 0) {
-                clearInterval(countdownTimer);
-                document.getElementById('countdown-label').textContent = "We're Married!";
-                document.getElementById('days').textContent = '0';
-                document.getElementById('hours').textContent = '0';
-                document.getElementById('minutes').textContent = '0';
-                document.getElementById('seconds').textContent = '0';
-                return;
-            }
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            document.getElementById('days').textContent = days;
-            document.getElementById('hours').textContent = hours;
-            document.getElementById('minutes').textContent = minutes;
-            document.getElementById('seconds').textContent = seconds;
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      mobileMenuButton.addEventListener("click", function () {
+        mobileMenu.classList.toggle("hidden");
+        mobileMenu.classList.toggle("open");
+
+        // Change icon based on menu state
+        const icon = mobileMenuButton.querySelector("i");
+        if (mobileMenu.classList.contains("hidden")) {
+          icon.classList.remove("fa-times");
+          icon.classList.add("fa-bars");
+        } else {
+          icon.classList.remove("fa-bars");
+          icon.classList.add("fa-times");
         }
-        
-        // Update countdown every second
-        const countdownTimer = setInterval(updateCountdown, 1000);
-        updateCountdown(); // Initial call
-        
-        // Timeline animation with Intersection Observer for better performance
-        document.addEventListener('DOMContentLoaded', function() {
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.2
-            };
-            
-            const observer = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-            
-            timelineItems.forEach(item => {
-                observer.observe(item);
-            });
-        });
-        
-        // Back to top button
-        const backToTopButton = document.getElementById('backToTop');
-        
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
+      });
+
+      // Countdown to wedding date (December 31, 2030)
+      const weddingDate = new Date("December 31, 2030 00:00:00").getTime();
+
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = weddingDate - now;
+
+        // If the countdown is over
+        if (distance < 0) {
+          clearInterval(countdownTimer);
+          document.getElementById("countdown-label").textContent =
+            "We're Married!";
+          document.getElementById("days").textContent = "0";
+          document.getElementById("hours").textContent = "0";
+          document.getElementById("minutes").textContent = "0";
+          document.getElementById("seconds").textContent = "0";
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("days").textContent = days;
+        document.getElementById("hours").textContent = hours;
+        document.getElementById("minutes").textContent = minutes;
+        document.getElementById("seconds").textContent = seconds;
+      }
+
+      // Update countdown every second
+      const countdownTimer = setInterval(updateCountdown, 1000);
+      updateCountdown(); // Initial call
+
+      // Timeline animation with Intersection Observer for better performance
+      document.addEventListener("DOMContentLoaded", function () {
+        const timelineItems = document.querySelectorAll(".timeline-item");
+
+        const observerOptions = {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.2,
+        };
+
+        const observer = new IntersectionObserver(function (entries, observer) {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
             }
+          });
+        }, observerOptions);
+
+        timelineItems.forEach((item) => {
+          observer.observe(item);
         });
-        
-        backToTopButton.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+      });
+
+      // Back to top button
+      const backToTopButton = document.getElementById("backToTop");
+
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset > 300) {
+          backToTopButton.classList.add("visible");
+        } else {
+          backToTopButton.classList.remove("visible");
+        }
+      });
+
+      backToTopButton.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
         });
-        
-        // Add loading animation to countdown initially
-        const countdownNumbers = document.querySelectorAll('.countdown-number');
-        countdownNumbers.forEach(number => {
-            number.classList.add('countdown-loading');
+      });
+
+      // Add loading animation to countdown initially
+      const countdownNumbers = document.querySelectorAll(".countdown-number");
+      countdownNumbers.forEach((number) => {
+        number.classList.add("countdown-loading");
+      });
+
+      // Remove loading animation after countdown updates
+      setTimeout(() => {
+        countdownNumbers.forEach((number) => {
+          number.classList.remove("countdown-loading");
         });
-        
-        // Remove loading animation after countdown updates
-        setTimeout(() => {
-            countdownNumbers.forEach(number => {
-                number.classList.remove('countdown-loading');
-            });
-        }, 1500);
+      }, 1500);
     </script>
-</body>
+  </body>
 </html>

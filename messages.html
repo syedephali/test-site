@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Secret Messages | Our Love Story</title>
+    <script>
+      const accessTime = localStorage.getItem("access_granted");
+      const now = new Date().getTime();
+      const tenMinutes = 10 * 60 * 1000;
+
+      if (!accessTime || now - accessTime > tenMinutes) {
+        localStorage.removeItem("access_granted");
+        window.location.href = "index.html"; // redirect if no access or expired
+      }
+    </script>
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"

@@ -606,8 +606,32 @@
       </div>
     </section>
 
+    <!-- Unlock Section -->
+    <section class="py-16 bg-white text-center">
+      <h2 class="text-3xl font-bold mb-4">Unlock the Secrets 💌</h2>
+      <p class="text-gray-600 mb-6">
+        What is the one thing that I love and am obsessed about you?
+      </p>
+
+      <div class="max-w-md mx-auto">
+        <input
+          type="text"
+          id="answerInput"
+          placeholder="Type your answer..."
+          class="w-full p-3 border rounded-lg mb-4"
+        />
+        <button
+          id="unlockBtn"
+          class="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition"
+        >
+          Unlock
+        </button>
+        <p id="feedback" class="mt-4 text-red-500 font-semibold"></p>
+      </div>
+    </section>
+
     <!-- Secret Messages Grid -->
-    <section class="py-16 bg-pink-50">
+    <section id="secretGrid" class="py-16 bg-pink-50 hidden">
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
@@ -702,7 +726,7 @@
     </section>
 
     <!-- Click to Reveal Messages -->
-    <section class="py-16 bg-white">
+    <section id="clickReveal" class="py-16 bg-white hidden">
       <div class="container mx-auto px-4">
         <div class="text-center mb-12">
           <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
@@ -830,8 +854,8 @@
               with you.
             </p>
             <p class="mb-4">
-              7. The special times we spent in March. I cannot tell much
-              about those two days here 😝.
+              7. The special times we spent in March. I cannot tell much about
+              those two days here 😝.
             </p>
             <p class="mb-4">
               8. The day we first went to Akib's house, and then what happened
@@ -1005,6 +1029,28 @@
           const icon = mobileMenuButton.querySelector("i");
           icon.classList.remove("fa-times");
           icon.classList.add("fa-bars");
+        }
+      });
+
+      const correctAnswer = "ass"; //
+      const unlockBtn = document.getElementById("unlockBtn");
+      const answerInput = document.getElementById("answerInput");
+      const feedback = document.getElementById("feedback");
+
+      unlockBtn.addEventListener("click", () => {
+        const userAnswer = answerInput.value.trim().toLowerCase();
+
+        if (userAnswer === correctAnswer.toLowerCase()) {
+          document.getElementById("secretGrid").classList.remove("hidden");
+          document.getElementById("clickReveal").classList.remove("hidden");
+          feedback.textContent = "💖 Yay! You unlocked the secrets!";
+          feedback.classList.remove("text-red-500");
+          feedback.classList.add("text-green-600");
+
+          // Optional: Hide the quiz section after unlocking
+          unlockBtn.parentElement.parentElement.style.display = "none";
+        } else {
+          feedback.textContent = "❌ Oops! Try again, my love.";
         }
       });
 

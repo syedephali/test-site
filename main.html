@@ -7,7 +7,7 @@
     <script>
       const accessTime = localStorage.getItem("access_granted");
       const now = new Date().getTime();
-      const tenMinutes = 1 * 60 * 1000;
+      const tenMinutes = 10 * 60 * 1000;
 
       if (!accessTime || now - accessTime > tenMinutes) {
         localStorage.removeItem("access_granted");

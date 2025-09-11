@@ -3,777 +3,152 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Our Love Story | Happy Birthday My Love</title>
+    <title>Happy Birthday My Love!</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Pacifico&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <script
-      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
-      defer
-    ></script>
     <style>
-      :root {
-        --primary: #fd2d78;
-        --secondary: #5c67de;
-        --accent: #ffaac9;
-      }
-
-      body {
-        font-family: "Inter", sans-serif;
-        background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
-        min-height: 100vh;
-      }
-
-      .heading-font {
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
         font-family: "Playfair Display", serif;
       }
 
-      .cursive-font {
-        font-family: "Pacifico", cursive;
+      body,
+      html {
+        height: 100%;
+        width: 100%;
       }
 
-      .heartbeat {
-        animation: heartbeat 1.5s ease-in-out infinite both;
-      }
-
-      @keyframes heartbeat {
-        from {
-          transform: scale(1);
-          transform-origin: center center;
-          animation-timing-function: ease-out;
-        }
-        10% {
-          transform: scale(0.91);
-          animation-timing-function: ease-in;
-        }
-        17% {
-          transform: scale(0.98);
-          animation-timing-function: ease-out;
-        }
-        33% {
-          transform: scale(0.87);
-          animation-timing-function: ease-in;
-        }
-        45% {
-          transform: scale(1);
-          animation-timing-function: ease-out;
-        }
-      }
-
-      .floating {
-        animation-name: floating;
-        animation-duration: 3s;
-        animation-iteration-count: infinite;
-        animation-timing-function: ease-in-out;
-      }
-
-      @keyframes floating {
-        0% {
-          transform: translate(0, 0px);
-        }
-        50% {
-          transform: translate(0, 15px);
-        }
-        100% {
-          transform: translate(0, -0px);
-        }
-      }
-
-      .parallax {
-        background-attachment: fixed;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-      }
-
-      .memory-card {
-        transition: all 0.3s ease;
-      }
-
-      .memory-card:hover {
-        transform: translateY(-5px) scale(1.02);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      }
-
-      .love-timeline {
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("images/memory-85.JPG") no-repeat center center/cover;
+        background-size: cover; /* cover the whole viewport */
+        background-position: center; /* center the image */
+        background-repeat: no-repeat; /* no tiling */
         position: relative;
-        padding-left: 3rem;
-        border-left: 2px solid var(--primary);
       }
 
-      .timeline-item {
-        position: relative;
-        margin-bottom: 3rem;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.6s ease-out;
-      }
-
-      .timeline-item.animate {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .timeline-item:before {
+      body::before {
         content: "";
         position: absolute;
-        left: -3.4rem;
-        top: 0;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: var(--primary);
-        border: 4px solid white;
-        box-shadow: 0 0 0 2px var(--primary);
-        transition: all 0.3s ease;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5); /* Dark overlay for readability */
       }
 
-      .timeline-item:hover:before {
-        transform: scale(1.2);
-        background: white;
-        border: 4px solid var(--primary);
-      }
-
-      .typewriter {
-        overflow: hidden;
-        border-right: 0.15em solid var(--primary);
-        white-space: nowrap;
-        animation: typing 3.5s steps(40, end),
-          blink-caret 0.75s step-end infinite;
-      }
-
-      @keyframes typing {
-        from {
-          width: 0;
-        }
-        to {
-          width: 100%;
-        }
-      }
-
-      @keyframes blink-caret {
-        from,
-        to {
-          border-color: transparent;
-        }
-        50% {
-          border-color: var(--primary);
-        }
-      }
-
-      #particles-js {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: 0;
-      }
-
-      .content-over-particle {
+      .login-container {
         position: relative;
+        background: rgba(255, 255, 255, 0.6);
+        padding: 2rem;
+        border-radius: 16px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
         z-index: 1;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(5px);
       }
 
-      .counter-section {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.8s ease-out;
+      h1 {
+        color: #fd2d78;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
       }
 
-      .counter-section.animate {
-        opacity: 1;
-        transform: translateY(0);
+      p {
+        color: #333;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
       }
 
-      .counter-item {
-        transition: all 0.5s ease;
+      input[type="text"] {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 1rem;
+        font-size: 1rem;
       }
 
-      .counter-item.animate {
-        transform: scale(1.05);
+      button {
+        background: #fd2d78;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background 0.3s ease;
       }
 
-      [x-cloak] {
-        display: none !important;
+      button:hover {
+        background: #e71d63;
+      }
+
+      #feedback {
+        margin-top: 1rem;
+        font-weight: bold;
+        color: red;
+      }
+
+      @media (max-width: 640px) {
+        h1 {
+          font-size: 1.5rem;
+        }
+        p {
+          font-size: 0.9rem;
+        }
       }
     </style>
   </head>
-  <body class="antialiased">
-    <!-- Navigation -->
-    <div class="navbar bg-base-100 shadow-sm px-4">
-      <!-- Navbar Start: Logo -->
-      <div class="navbar-start">
-        <a
-          href="index.html"
-          class="btn btn-ghost text-xl cursive-font text-pink-600"
-          >Our Love Story</a
-        >
-      </div>
-
-      <!-- Navbar End: Desktop Menu -->
-      <div class="navbar-end hidden lg:flex">
-        <ul class="menu menu-horizontal px-1">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="story.html">Our Story</a></li>
-          <li><a href="memories.html">Memories</a></li>
-          <li><a href="love-meter.html">Love Meter</a></li>
-          <li><a href="future.html">Future</a></li>
-          <li><a href="messages.html">Messages</a></li>
-        </ul>
-      </div>
-
-      <!-- Mobile dropdown -->
-      <div class="navbar-end lg:hidden">
-        <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </label>
-          <ul
-            tabindex="0"
-            class="menu menu-compact dropdown-content bg-base-100 rounded-box z-50 mt-3 p-2 shadow w-52"
-          >
-            <li><a href="index.html">Home</a></li>
-            <li><a href="story.html">Our Story</a></li>
-            <li><a href="memories.html">Memories</a></li>
-            <li><a href="love-meter.html">Love Meter</a></li>
-            <li><a href="future.html">Future</a></li>
-            <li><a href="messages.html">Messages</a></li>
-          </ul>
-        </div>
-      </div>
+  <body>
+    <div class="login-container">
+      <h1>Happy Birthday My Love! 💖</h1>
+      <p>
+        What is that special number which is lucky for both of us, the date when
+        all our special things happened? 🎂
+      </p>
+      <input
+        type="text"
+        id="specialDate"
+        placeholder="Enter the special number"
+      />
+      <button id="loginBtn">Reveal My Love!</button>
+      <p id="feedback"></p>
     </div>
 
-    <!-- Main Content - Home Page -->
-    <main>
-      <!-- Hero Section -->
-      <section
-        class="min-h-screen flex items-center justify-center relative overflow-hidden"
-      >
-        <div id="particles-js"></div>
-        <div class="container mx-auto px-4 py-20 content-over-particle">
-          <div class="flex flex-col md:flex-row items-center justify-between">
-            <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
-              <h1 class="text-4xl md:text-6xl font-bold heading-font mb-6">
-                Happy Birthday <span class="text-pink-600">My Love</span>
-              </h1>
-              <p class="text-xl mb-8 text-gray-700">
-                A journey of a thousand memories begins with a single smile.
-                Here's to celebrating our story.
-              </p>
-              <div class="typewriter text-2xl text-pink-600 cursive-font mb-8">
-                Forever yours, now and always
-              </div>
-              <div class="flex flex-wrap gap-4 justify-center md:justify-start">
-                <a href="story.html" class="btn btn-primary rounded-full px-8"
-                  >Our Story</a
-                >
-                <a
-                  href="memories.html"
-                  class="btn btn-outline btn-primary rounded-full px-8"
-                  >Memories</a
-                >
-              </div>
-            </div>
-            <div class="md:w-1/2 flex justify-center">
-              <div class="relative w-80 h-80">
-                <div
-                  class="absolute inset-0 bg-pink-200 rounded-full floating"
-                ></div>
-                <div
-                  class="absolute inset-4 bg-pink-100 rounded-full floating"
-                  style="animation-delay: 0.5s"
-                ></div>
-                <div
-                  class="absolute inset-8 bg-white rounded-full overflow-hidden shadow-xl"
-                >
-                  <!-- Replace with your favorite photo -->
-                  <div
-                    class="w-full h-full bg-gray-200 flex items-center justify-center"
-                  >
-                    <img src="images/cover-photo.JPG" alt="" />
-                  </div>
-                </div>
-                <div
-                  class="absolute -bottom-4 -right-4 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center heartbeat"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-10 w-10 text-pink-600"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Love Quote Section -->
-      <section class="py-20 bg-pink-50">
-        <div class="container mx-auto px-4">
-          <div class="text-center max-w-3xl mx-auto">
-            <div class="text-pink-500 mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-12 w-12 inline-block"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-            </div>
-            <h2 class="text-3xl md:text-4xl heading-font mb-6 font-bold">
-              "In you, I've found the love of my life and my closest, truest
-              friend."
-            </h2>
-            <p class="text-gray-600">- Syed Sowad Ephraim Ali</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Quick Timeline Preview -->
-      <section class="py-20">
-        <div class="container mx-auto px-4">
-          <h2
-            class="text-3xl md:text-4xl font-bold heading-font text-center mb-16"
-          >
-            Our Journey Together
-          </h2>
-
-          <div class="love-timeline max-w-2xl mx-auto">
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold mb-2">First Meeting</h3>
-              <p class="text-gray-600 mb-2">March 25, 2024</p>
-              <p class="text-gray-700">
-                The day our eyes first met, my world was about to change
-                forever—but I didn't have the slightest idea.
-              </p>
-            </div>
-
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold mb-2">Second Meeting</h3>
-              <p class="text-gray-600 mb-2">July 15, 2024</p>
-              <p class="text-gray-700">
-                The day it all began—the talking, the getting to know each
-                other—I had no idea I was about to fall hard.
-              </p>
-            </div>
-
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold mb-2">First Confession</h3>
-              <p class="text-gray-600 mb-2">December 31, 2024</p>
-              <p class="text-gray-700">
-                The day my heart overflowed, and I could no longer keep it
-                hidden—I confessed.
-              </p>
-            </div>
-
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold mb-2">The Proposal</h3>
-              <p class="text-gray-600 mb-2">May 25, 2025</p>
-              <p class="text-gray-700">
-                The day you looked into my eyes, your words trembling with love,
-                and asked me to spend forever with you. The most nervous and
-                exciting moment of my life.
-              </p>
-            </div>
-          </div>
-
-          <div class="text-center mt-12">
-            <a
-              href="story.html"
-              class="btn btn-outline btn-primary rounded-full px-8"
-              >See Full Story</a
-            >
-          </div>
-        </div>
-      </section>
-
-      <section class="py-20 bg-base-200">
-        <div class="container mx-auto px-4">
-          <h2
-            class="text-3xl md:text-4xl font-bold heading-font text-center mb-4"
-          >
-            Precious Memories
-          </h2>
-          <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">
-            Every moment with you becomes a beautiful memory I treasure forever.
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Memory Card 1 -->
-            <div
-              class="memory-card rounded-xl overflow-hidden shadow-lg bg-white"
-            >
-              <div
-                class="h-56 bg-gray-200 flex items-center justify-center relative"
-              >
-                <img
-                  src="images/index-memory-1.JPG"
-                  alt="Doel Chattor"
-                  class="object-cover w-full h-full"
-                />
-                <div class="absolute inset-0 bg-black opacity-30"></div>
-                <div
-                  class="absolute inset-0 flex items-center justify-center text-white"
-                >
-                  <h3 class="font-bold text-lg">Doel Chattor</h3>
-                </div>
-              </div>
-              <div class="p-4">
-                <p class="text-gray-700">First time our hands touched.</p>
-              </div>
-            </div>
-
-            <!-- Memory Card 2 -->
-            <div
-              class="memory-card rounded-xl overflow-hidden shadow-lg bg-white"
-            >
-              <div
-                class="h-56 bg-gray-200 flex items-center justify-center relative"
-              >
-                <img
-                  src="images/index-memory-2.JPG"
-                  alt="First Birthday with Me"
-                  class="object-cover w-full h-full"
-                />
-                <div class="absolute inset-0 bg-black opacity-30"></div>
-                <div
-                  class="absolute inset-0 flex items-center justify-center text-white"
-                >
-                  <h3 class="font-bold text-lg">First Birthday with Me.</h3>
-                </div>
-              </div>
-              <div class="p-4">
-                <p class="text-gray-700">Back then, we both felt so awkward.</p>
-              </div>
-            </div>
-
-            <!-- Memory Card 3 -->
-            <div
-              class="memory-card rounded-xl overflow-hidden shadow-lg bg-white"
-            >
-              <div
-                class="h-56 bg-gray-200 flex items-center justify-center relative"
-              >
-                <img
-                  src="images/index-memory-3.jpg"
-                  alt="Talked for 8 hours straight"
-                  class="object-cover w-full h-full"
-                />
-                <div class="absolute inset-0 bg-black opacity-30"></div>
-                <div
-                  class="absolute inset-0 flex items-center justify-center text-white"
-                >
-                  <h3 class="font-bold text-lg">
-                    Talked for 8 hours straight.
-                  </h3>
-                </div>
-              </div>
-              <div class="p-4">
-                <p class="text-gray-700">Just talked and talked.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="text-center mt-12">
-            <a href="memories.html" class="btn btn-primary rounded-full px-8"
-              >View All Memories</a
-            >
-          </div>
-        </div>
-      </section>
-
-      <!-- Interactive Element Preview -->
-      <section id="love-numbers" class="py-20 counter-section">
-        <div class="container mx-auto px-4">
-          <h2
-            class="text-3xl md:text-4xl font-bold heading-font text-center mb-16"
-          >
-            Our Love in Numbers
-          </h2>
-
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div class="p-6 counter-item">
-              <div
-                class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
-                id="days-together"
-              >
-                0
-              </div>
-              <div class="text-gray-600">Days Together</div>
-            </div>
-
-            <div class="p-6 counter-item">
-              <div
-                class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
-                id="memories-count"
-              >
-                0
-              </div>
-              <div class="text-gray-600">Memories Made</div>
-            </div>
-
-            <div class="p-6 counter-item">
-              <div
-                class="text-xl lg:text-3xl font-bold text-pink-600 mb-2"
-                id="adventures-count"
-              >
-                0
-              </div>
-              <div class="text-gray-600">Adventures</div>
-            </div>
-
-            <div class="p-6 counter-item">
-              <div
-                class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
-                id="love-percent"
-              >
-                0%
-              </div>
-              <div class="text-gray-600">Pure Love</div>
-            </div>
-          </div>
-
-          <div class="text-center mt-12">
-            <a
-              href="love-meter.html"
-              class="btn btn-outline btn-primary rounded-full px-8"
-              >Test Our Love</a
-            >
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- Footer -->
-    <footer
-      class="footer footer-center p-10 bg-base-200 text-base-content rounded"
-    >
-      <div class="grid grid-flow-col gap-4">
-        <a href="story.html" class="link link-hover">Our Story</a>
-        <a href="memories.html" class="link link-hover">Memories</a>
-        <a href="future.html" class="link link-hover">Future Plans</a>
-        <a href="messages.html" class="link link-hover">Secret Messages</a>
-      </div>
-      <div>
-        <div class="grid grid-flow-col gap-4">
-          <a href="https://www.facebook.com/heavenly.yaksha001/">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              class="fill-current"
-            >
-              <path
-                d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"
-              ></path>
-            </svg>
-          </a>
-          <a href="https://www.instagram.com/godposeidon001/">
-            <!-- Instagram monochrome (color via CSS) -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              width="24"
-              height="24"
-              role="img"
-              aria-label="Instagram"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="36"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="64" y="64" width="384" height="384" rx="96" />
-              <circle cx="256" cy="256" r="96" fill="none" />
-              <circle
-                cx="384"
-                cy="128"
-                r="16"
-                fill="currentColor"
-                stroke="none"
-              />
-            </svg>
-          </a>
-        </div>
-      </div>
-      <div>
-        <p>Copyright © 2025 - Made with ❤️ for the love of my life</p>
-      </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-      // Initialize particles
-      document.addEventListener("DOMContentLoaded", function () {
-        particlesJS("particles-js", {
-          particles: {
-            number: { value: 80, density: { enable: true, value_area: 800 } },
-            color: { value: "#fd2d78" },
-            shape: { type: "heart" },
-            opacity: { value: 0.5, random: true },
-            size: { value: 10, random: true },
-            line_linked: { enable: false },
-            move: {
-              enable: true,
-              speed: 2,
-              direction: "none",
-              random: true,
-              out_mode: "out",
-            },
-          },
-          interactivity: {
-            detect_on: "canvas",
-            events: {
-              onhover: { enable: true, mode: "repulse" },
-              onclick: { enable: true, mode: "push" },
-            },
-          },
-        });
+      const loginBtn = document.getElementById("loginBtn");
+      const input = document.getElementById("specialDate");
+      const feedback = document.getElementById("feedback");
 
-        // Set up animations
-        setupAnimations();
+      const correctAnswer = "14"; // replace with your special date number
+
+      loginBtn.addEventListener("click", () => {
+        const userAnswer = input.value.trim();
+        if (userAnswer === correctAnswer) {
+          feedback.style.color = "green";
+          feedback.textContent = "💖 Yay! Loading your surprise...";
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1000);
+        } else {
+          feedback.style.color = "red";
+          feedback.textContent = "❌ Oops! Try again, my love.";
+          input.value = "";
+        }
       });
 
-      // Counter animation function with sudden text switch
-      function animateCounter(
-        elementId,
-        finalValue,
-        duration,
-        finalText = null,
-        switchAt = null
-      ) {
-        let startTime = null;
-        const element = document.getElementById(elementId);
-        const startValue = 0;
-
-        function step(timestamp) {
-          if (!startTime) startTime = timestamp;
-          const progress = Math.min((timestamp - startTime) / duration, 1);
-          const value = Math.floor(
-            progress * (finalValue - startValue) + startValue
-          );
-
-          if (finalText && switchAt && value >= switchAt) {
-            element.textContent = finalText;
-            return; // stop animation immediately at text
-          }
-
-          element.textContent =
-            elementId === "love-percent" ? `${value}%` : value.toLocaleString();
-
-          if (progress < 1) {
-            window.requestAnimationFrame(step);
-          }
+      // Optional: Allow Enter key to submit
+      input.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          loginBtn.click();
         }
-
-        window.requestAnimationFrame(step);
-      }
-
-      // Set up intersection observers for animations
-      function setupAnimations() {
-        const observerOptions = {
-          threshold: 0.3,
-          rootMargin: "0px 0px -50px 0px",
-        };
-
-        // Observer for timeline items
-        const timelineObserver = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("animate");
-              timelineObserver.unobserve(entry.target);
-            }
-          });
-        }, observerOptions);
-
-        document.querySelectorAll(".timeline-item").forEach((item) => {
-          timelineObserver.observe(item);
-        });
-
-        // Observer for counter section
-        const counterSectionObserver = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("animate");
-
-              setTimeout(() => animateCounter("days-together", 538, 2000), 100);
-              setTimeout(
-                () => animateCounter("memories-count", 538, 2000),
-                300
-              );
-
-              // Adventures → count fast till 500 then instantly switch to text
-              setTimeout(
-                () =>
-                  animateCounter(
-                    "adventures-count",
-                    500,
-                    2000,
-                    "Eternity Awaits",
-                    500
-                  ),
-                500
-              );
-
-              setTimeout(() => animateCounter("love-percent", 100, 2500), 700);
-
-              // Animate counter items
-              document
-                .querySelectorAll(".counter-item")
-                .forEach((item, index) => {
-                  setTimeout(() => {
-                    item.classList.add("animate");
-                  }, 800 + index * 200);
-                });
-
-              counterSectionObserver.unobserve(entry.target);
-            }
-          });
-        }, observerOptions);
-
-        const counterSection = document.getElementById("love-numbers");
-        if (counterSection) {
-          counterSectionObserver.observe(counterSection);
-        }
-      }
+      });
     </script>
   </body>
 </html>

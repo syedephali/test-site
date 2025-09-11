@@ -126,7 +126,7 @@
       const input = document.getElementById("specialDate");
       const feedback = document.getElementById("feedback");
 
-      const correctAnswer = "14"; // replace with your special date number
+      const correctAnswer = "25"; // replace with your special date number
 
       loginBtn.addEventListener("click", () => {
         const userAnswer = input.value.trim();
@@ -134,7 +134,7 @@
           feedback.style.color = "green";
           feedback.textContent = "💖 Yay! Loading your surprise...";
           setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "main.html";
           }, 1000);
         } else {
           feedback.style.color = "red";

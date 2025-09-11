@@ -1,0 +1,2988 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Memories | Our Love Story</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #fd2d78;
+        --secondary: #5c67de;
+        --accent: #ffaac9;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .heading-font {
+        font-family: "Playfair Display", serif;
+      }
+
+      .gallery-filter {
+        transition: all 0.3s ease;
+      }
+
+      .gallery-filter.active {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .memory-card {
+        transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        opacity: 1;
+        transform: translateY(0);
+        position: relative;
+      }
+
+      .memory-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .memory-card.hidden {
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
+        height: 0;
+        margin: 0;
+        padding: 0;
+      }
+
+      .memory-card.fade-out {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .memory-card.fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: auto;
+      }
+
+      .memory-card.visible.fade-in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .memory-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .memory-image {
+        width: 100%;
+        aspect-ratio: 4/3; /* keeps a consistent card shape, remove if you want true auto height */
+        background-size: contain; /* ensures the full image is visible */
+        background-position: center; /* centers the image in the card */
+        background-repeat: no-repeat; /* prevents tiling */
+        background-color: #f8f9ff; /* optional: fills space around image */
+        transition: transform 0.3s ease; /* smooth hover effect */
+      }
+
+      .memory-card:hover .memory-image {
+        transform: scale(1.05); /* slight zoom on hover, doesn’t crop */
+      }
+
+      .memory-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 12px;
+      }
+
+      .memory-card:hover .memory-overlay {
+        opacity: 1;
+      }
+
+      .memory-date {
+        padding: 0.75rem;
+        background: #fff;
+        text-align: center;
+        font-weight: 500;
+        color: #555;
+      }
+
+      #lightbox-image {
+        width: 100%;
+        max-height: 80vh; /* responsive max height */
+        object-fit: contain; /* ensures full image is visible */
+        border-radius: 12px;
+      }
+
+      .lightbox {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .lightbox.active {
+        display: flex;
+        opacity: 1;
+      }
+
+      .lightbox-content {
+        max-width: 90%;
+        max-height: 90%;
+        position: relative;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+
+      .lightbox.active .lightbox-content {
+        transform: scale(1);
+      }
+
+      .lightbox-caption {
+        color: white;
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .close-lightbox {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .close-lightbox:hover {
+        color: var(--accent);
+      }
+
+      .nav-btn {
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .heartbeat {
+        animation: heartbeat 1.5s ease-in-out infinite both;
+      }
+
+      @keyframes heartbeat {
+        from {
+          transform: scale(1);
+          transform-origin: center center;
+          animation-timing-function: ease-out;
+        }
+        10% {
+          transform: scale(0.91);
+          animation-timing-function: ease-in;
+        }
+        17% {
+          transform: scale(0.98);
+          animation-timing-function: ease-out;
+        }
+        33% {
+          transform: scale(0.87);
+          animation-timing-function: ease-in;
+        }
+        45% {
+          transform: scale(1);
+          animation-timing-function: ease-out;
+        }
+      }
+
+      .counter-section {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease-out;
+      }
+
+      .counter-section.animate {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .counter-item {
+        transition: all 0.5s ease;
+      }
+
+      .counter-item.animate {
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <a href="index.html" class="text-xl font-bold text-pink-600"
+            ><i class="fas fa-heart mr-2"></i> Our Love Story</a
+          >
+          <div class="hidden md:flex space-x-6">
+            <a href="index.html" class="text-gray-600 hover:text-pink-600"
+              >Home</a
+            >
+            <a href="story.html" class="text-gray-600 hover:text-pink-600"
+              >Our Story</a
+            >
+            <a href="memories.html" class="text-pink-600 font-semibold"
+              >Memories</a
+            >
+            <a href="love-meter.html" class="text-gray-600 hover:text-pink-600"
+              >Love Meter</a
+            >
+            <a href="future.html" class="text-gray-600 hover:text-pink-600"
+              >Future</a
+            >
+            <a href="messages.html" class="text-gray-600 hover:text-pink-600"
+              >Messages</a
+            >
+          </div>
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-600">
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden px-4 pt-2 pb-4 bg-white border-t">
+        <div class="flex flex-col space-y-3">
+          <a href="index.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Home</a
+          >
+          <a href="story.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Our Story</a
+          >
+          <a href="memories.html" class="text-pink-600 font-semibold py-2"
+            >Memories</a
+          >
+          <a
+            href="love-meter.html"
+            class="text-gray-600 hover:text-pink-600 py-2"
+            >Love Meter</a
+          >
+          <a href="future.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Future</a
+          >
+          <a href="messages.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Messages</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header
+      class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-16"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold heading-font mb-4">
+          Our Precious Memories
+        </h1>
+        <p class="text-xl max-w-3xl mx-auto">
+          Every moment with you is a treasure I keep close to my heart
+        </p>
+      </div>
+    </header>
+
+    <!-- Gallery Filters -->
+    <section class="py-12 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold heading-font mb-4">
+            Our Journey Together
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Filter through our special moments by month
+          </p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4 mb-12">
+          <button
+            class="gallery-filter active px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="all"
+          >
+            All Memories
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="september-2024"
+          >
+            September 2024
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="october-2024"
+          >
+            October 2024
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="november-2024"
+          >
+            November 2024
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="december-2024"
+          >
+            December 2024
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="january-2025"
+          >
+            January 2025
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="february-2025"
+          >
+            February 2025
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="march-2025"
+          >
+            March 2025
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="april-2025"
+          >
+            April 2025
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="may-2025"
+          >
+            May 2025
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="june-2025"
+          >
+            June 2025
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="july-2025"
+          >
+            July 2025
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="august-2025"
+          >
+            August 2025
+          </button>
+          <button
+            class="gallery-filter px-6 py-2 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white"
+            data-filter="september-2025"
+          >
+            September 2025
+          </button>
+        </div>
+
+        <!-- Memories Gallery (STATIC - 10 items) -->
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          id="memories-grid"
+        >
+          <!-- Batch 1: memory-1 to memory-25 -->
+          <!-- Batch 1: Memory 1–25 -->
+          <div class="memory-card relative" data-category="september-2024">
+            <div
+              class="memory-image"
+              data-id="1"
+              style="background-image: url('images/memory-1.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">September 13, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="september-2024">
+            <div
+              class="memory-image"
+              data-id="2"
+              style="background-image: url('images/memory-2.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">September 24, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="september-2024">
+            <div
+              class="memory-image"
+              data-id="3"
+              style="background-image: url('images/memory-3.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">September 29, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="october-2024">
+            <div
+              class="memory-image"
+              data-id="4"
+              style="background-image: url('images/memory-4.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">October 12, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="october-2024">
+            <div
+              class="memory-image"
+              data-id="5"
+              style="background-image: url('images/memory-5.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">October 13, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="october-2024">
+            <div
+              class="memory-image"
+              data-id="6"
+              style="background-image: url('images/memory-6.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">October 14, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="7"
+              style="background-image: url('images/memory-7.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 3, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="8"
+              style="background-image: url('images/memory-8.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 7, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="9"
+              style="background-image: url('images/memory-9.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 9, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="10"
+              style="background-image: url('images/memory-10.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 11, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="11"
+              style="background-image: url('images/memory-11.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 17, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="12"
+              style="background-image: url('images/memory-12.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 19, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="13"
+              style="background-image: url('images/memory-13.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 20, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="14"
+              style="background-image: url('images/memory-14.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 21, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="15"
+              style="background-image: url('images/memory-15.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 26, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="16"
+              style="background-image: url('images/memory-16.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 28, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="november-2024">
+            <div
+              class="memory-image"
+              data-id="17"
+              style="background-image: url('images/memory-17.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">November 30, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="18"
+              style="background-image: url('images/memory-18.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 4, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="19"
+              style="background-image: url('images/memory-19.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 5, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="20"
+              style="background-image: url('images/memory-20.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 11, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="21"
+              style="background-image: url('images/memory-21.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 14, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="22"
+              style="background-image: url('images/memory-22.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 15, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="23"
+              style="background-image: url('images/memory-23.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 16, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="24"
+              style="background-image: url('images/memory-24.jpg')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 17, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="25"
+              style="background-image: url('images/memory-25.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 19, 2024</div>
+          </div>
+
+          <!-- Batch 2: memory-26 to memory-50 -->
+          <!-- Batch 2: Memory 26–50 -->
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="26"
+              style="background-image: url('images/memory-26.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 20, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="27"
+              style="background-image: url('images/memory-27.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 21, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="28"
+              style="background-image: url('images/memory-28.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 22, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="29"
+              style="background-image: url('images/memory-29.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 25, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="30"
+              style="background-image: url('images/memory-30.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 26, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="31"
+              style="background-image: url('images/memory-31.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 28, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="32"
+              style="background-image: url('images/memory-32.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 30, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="december-2024">
+            <div
+              class="memory-image"
+              data-id="33"
+              style="background-image: url('images/memory-33.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">December 31, 2024</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="34"
+              style="background-image: url('images/memory-34.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 1, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="35"
+              style="background-image: url('images/memory-35.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 2, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="36"
+              style="background-image: url('images/memory-36.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 3, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="37"
+              style="background-image: url('images/memory-37.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 5, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="38"
+              style="background-image: url('images/memory-38.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 6, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="39"
+              style="background-image: url('images/memory-39.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 7, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="40"
+              style="background-image: url('images/memory-40.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 9, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="41"
+              style="background-image: url('images/memory-41.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 11, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="42"
+              style="background-image: url('images/memory-42.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 12, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="43"
+              style="background-image: url('images/memory-43.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 13, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="44"
+              style="background-image: url('images/memory-44.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 17, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="45"
+              style="background-image: url('images/memory-45.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 19, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="46"
+              style="background-image: url('images/memory-46.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 20, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="47"
+              style="background-image: url('images/memory-47.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 21, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="48"
+              style="background-image: url('images/memory-48.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 26, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="49"
+              style="background-image: url('images/memory-49.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 27, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="50"
+              style="background-image: url('images/memory-50.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 28, 2025</div>
+          </div>
+
+          <!-- Batch 3: memory-51 to memory-75 -->
+          <!-- Batch 3: Memory 51–75 -->
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="51"
+              style="background-image: url('images/memory-51.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 29, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="january-2025">
+            <div
+              class="memory-image"
+              data-id="52"
+              style="background-image: url('images/memory-52.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">January 30, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="53"
+              style="background-image: url('images/memory-53.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 1, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="54"
+              style="background-image: url('images/memory-54.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 4, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="55"
+              style="background-image: url('images/memory-55.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 5, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="56"
+              style="background-image: url('images/memory-56.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 9, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="57"
+              style="background-image: url('images/memory-57.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 10, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="58"
+              style="background-image: url('images/memory-58.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 12, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="59"
+              style="background-image: url('images/memory-59.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 13, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="60"
+              style="background-image: url('images/memory-60.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 14, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="61"
+              style="background-image: url('images/memory-61.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 16, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="62"
+              style="background-image: url('images/memory-62.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 17, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="63"
+              style="background-image: url('images/memory-63.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 18, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="64"
+              style="background-image: url('images/memory-64.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 20, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="65"
+              style="background-image: url('images/memory-65.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 21, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="66"
+              style="background-image: url('images/memory-66.jpg')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 22, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="67"
+              style="background-image: url('images/memory-67.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 23, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="68"
+              style="background-image: url('images/memory-68.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 27, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="february-2025">
+            <div
+              class="memory-image"
+              data-id="69"
+              style="background-image: url('images/memory-69.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">February 28, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="70"
+              style="background-image: url('images/memory-70.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 1, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="71"
+              style="background-image: url('images/memory-71.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 2, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="72"
+              style="background-image: url('images/memory-72.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 8, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="73"
+              style="background-image: url('images/memory-73.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 9, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="74"
+              style="background-image: url('images/memory-74.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 10, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="75"
+              style="background-image: url('images/memory-75.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 11, 2025</div>
+          </div>
+
+          <!-- Batch 4: memory-76 to memory-100 -->
+          <!-- Batch 4: Memory 76–100 -->
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="76"
+              style="background-image: url('images/memory-76.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 12, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="77"
+              style="background-image: url('images/memory-77.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 17, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="78"
+              style="background-image: url('images/memory-78.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 18, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="79"
+              style="background-image: url('images/memory-79.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 20, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="80"
+              style="background-image: url('images/memory-80.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 21, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="81"
+              style="background-image: url('images/memory-81.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 22, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="82"
+              style="background-image: url('images/memory-82.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 23, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="83"
+              style="background-image: url('images/memory-83.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 27, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="84"
+              style="background-image: url('images/memory-84.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 28, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="85"
+              style="background-image: url('images/memory-85.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 30, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="march-2025">
+            <div
+              class="memory-image"
+              data-id="86"
+              style="background-image: url('images/memory-86.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">March 31, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="87"
+              style="background-image: url('images/memory-87.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 5, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="88"
+              style="background-image: url('images/memory-88.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 6, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="89"
+              style="background-image: url('images/memory-89.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 8, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="90"
+              style="background-image: url('images/memory-90.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 9, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="91"
+              style="background-image: url('images/memory-91.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 10, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="92"
+              style="background-image: url('images/memory-92.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 11, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="93"
+              style="background-image: url('images/memory-93.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 14, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="94"
+              style="background-image: url('images/memory-94.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 19, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="95"
+              style="background-image: url('images/memory-95.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 20, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="96"
+              style="background-image: url('images/memory-96.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 22, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="97"
+              style="background-image: url('images/memory-97.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 24, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="98"
+              style="background-image: url('images/memory-98.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 27, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="99"
+              style="background-image: url('images/memory-99.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 29, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="april-2025">
+            <div
+              class="memory-image"
+              data-id="100"
+              style="background-image: url('images/memory-100.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">April 30, 2025</div>
+          </div>
+
+          <!-- Batch 5: memory-101 to memory-125 -->
+          <!-- Batch 5: Memory 101–125 -->
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="101"
+              style="background-image: url('images/memory-101.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 2, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="102"
+              style="background-image: url('images/memory-102.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 4, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="103"
+              style="background-image: url('images/memory-103.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 5, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="104"
+              style="background-image: url('images/memory-104.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 10, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="105"
+              style="background-image: url('images/memory-105.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 12, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="106"
+              style="background-image: url('images/memory-106.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 13, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="107"
+              style="background-image: url('images/memory-107.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 15, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="108"
+              style="background-image: url('images/memory-108.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 20, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="109"
+              style="background-image: url('images/memory-109.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 23, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="110"
+              style="background-image: url('images/memory-110.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 24, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="111"
+              style="background-image: url('images/memory-111.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 25, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="112"
+              style="background-image: url('images/memory-112.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 26, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="113"
+              style="background-image: url('images/memory-113.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 27, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="114"
+              style="background-image: url('images/memory-114.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 28, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="may-2025">
+            <div
+              class="memory-image"
+              data-id="115"
+              style="background-image: url('images/memory-115.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">May 31, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="116"
+              style="background-image: url('images/memory-116.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 6, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="117"
+              style="background-image: url('images/memory-117.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 7, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="118"
+              style="background-image: url('images/memory-118.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 8, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="119"
+              style="background-image: url('images/memory-119.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 11, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="120"
+              style="background-image: url('images/memory-120.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 12, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="121"
+              style="background-image: url('images/memory-121.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 13, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="122"
+              style="background-image: url('images/memory-122.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 14, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="123"
+              style="background-image: url('images/memory-123.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 17, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="124"
+              style="background-image: url('images/memory-124.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 21, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="june-2025">
+            <div
+              class="memory-image"
+              data-id="125"
+              style="background-image: url('images/memory-125.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">June 24, 2025</div>
+          </div>
+
+          <!-- Batch 6: memory-126 to memory-139 -->
+          <!-- Batch 6: Memory 126–139 -->
+          <div class="memory-card relative" data-category="july-2025">
+            <div
+              class="memory-image"
+              data-id="126"
+              style="background-image: url('images/memory-126.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">July 2, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="july-2025">
+            <div
+              class="memory-image"
+              data-id="127"
+              style="background-image: url('images/memory-127.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">July 5, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="july-2025">
+            <div
+              class="memory-image"
+              data-id="128"
+              style="background-image: url('images/memory-128.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">July 8, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="july-2025">
+            <div
+              class="memory-image"
+              data-id="129"
+              style="background-image: url('images/memory-129.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">July 9, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="july-2025">
+            <div
+              class="memory-image"
+              data-id="130"
+              style="background-image: url('images/memory-130.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">July 10, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="july-2025">
+            <div
+              class="memory-image"
+              data-id="131"
+              style="background-image: url('images/memory-131.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">July 13, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="july-2025">
+            <div
+              class="memory-image"
+              data-id="132"
+              style="background-image: url('images/memory-132.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">July 21, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="july-2025">
+            <div
+              class="memory-image"
+              data-id="133"
+              style="background-image: url('images/memory-133.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">July 24, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="august-2025">
+            <div
+              class="memory-image"
+              data-id="134"
+              style="background-image: url('images/memory-134.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">August 7, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="august-2025">
+            <div
+              class="memory-image"
+              data-id="135"
+              style="background-image: url('images/memory-135.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">August 10, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="august-2025">
+            <div
+              class="memory-image"
+              data-id="136"
+              style="background-image: url('images/memory-136.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">August 11, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="august-2025">
+            <div
+              class="memory-image"
+              data-id="137"
+              style="background-image: url('images/memory-137.png')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">August 13, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="september-2025">
+            <div
+              class="memory-image"
+              data-id="138"
+              style="background-image: url('images/memory-138.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">September 3, 2025</div>
+          </div>
+
+          <div class="memory-card relative" data-category="september-2025">
+            <div
+              class="memory-image"
+              data-id="139"
+              style="background-image: url('images/memory-139.JPG')"
+            ></div>
+            <div class="memory-overlay flex items-center justify-center">
+              <button
+                class="view-memory text-white font-bold px-4 py-2 bg-pink-600 rounded-full hover:bg-pink-500"
+              >
+                View
+              </button>
+            </div>
+            <div class="memory-date">September 6, 2025</div>
+          </div>
+
+          <!-- 10 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="memory-lightbox">
+      <div class="lightbox-content">
+        <span
+          class="close-lightbox"
+          role="button"
+          aria-label="Close Lightbox"
+          id="close-lightbox"
+          >&times;</span
+        >
+        <div
+          class="bg-white p-6 rounded-lg max-w-lg mx-auto flex flex-col items-center"
+        >
+          <img
+            id="lightbox-image"
+            src=""
+            alt="Memory"
+            class="w-full h-auto object-contain rounded-lg"
+          />
+          <div class="lightbox-caption text-gray-800 text-center mt-4">
+            <p class="text-xl font-bold" id="lightbox-title"></p>
+            <p class="text-gray-600" id="lightbox-date"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Memory Counter Section -->
+    <section id="memory-counter" class="py-16 bg-pink-50 counter-section">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Our Memories in Numbers
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Each number tells a story of our love journey
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div class="p-6 bg-white rounded-xl shadow-lg counter-item">
+            <div
+              class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
+              id="total-memories"
+            >
+              0
+            </div>
+            <div class="text-gray-600">Memories</div>
+          </div>
+          <div class="p-6 bg-white rounded-xl shadow-lg counter-item">
+            <div
+              class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
+              id="together-days"
+            >
+              0
+            </div>
+            <div class="text-gray-600">Days Together</div>
+          </div>
+          <div class="p-6 bg-white rounded-xl shadow-lg counter-item">
+            <div
+              class="text-lg lg:text-3xl font-bold text-pink-600 mb-2"
+              id="places-visited"
+            >
+              0
+            </div>
+            <div class="text-gray-600">Places Visited</div>
+          </div>
+          <div class="p-6 bg-white rounded-xl shadow-lg counter-item">
+            <div
+              class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
+              id="new-memories"
+            >
+              0
+            </div>
+            <div class="text-gray-600">Memories to Make</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section
+      class="py-16 bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold heading-font mb-6">
+          More of Our Story
+        </h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">
+          Explore other aspects of our journey together
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <a
+            href="story.html"
+            class="bg-white text-pink-600 px-6 py-3 rounded-full font-semibold nav-btn"
+            >Our Story</a
+          >
+          <a
+            href="love-meter.html"
+            class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold nav-btn"
+            >Love Meter</a
+          >
+          <a
+            href="future.html"
+            class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold nav-btn"
+            >Future Together</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+      <div class="container mx-auto px-4 text-center">
+        <h3 class="text-2xl font-bold heading-font mb-4">Forever Yours</h3>
+        <p class="max-w-2xl mx-auto mb-6">
+          "I swear I couldn't love you more than I do right now, and yet I know
+          I will tomorrow."
+        </p>
+        <div class="flex justify-center space-x-6 mb-6">
+          <a
+            href="https://www.facebook.com/heavenly.yaksha001/"
+            class="text-pink-400 hover:text-pink-300"
+            ><i class="fab fa-facebook text-2xl"></i
+          ></a>
+          <a
+            href="https://www.instagram.com/godposeidon001/"
+            class="text-pink-400 hover:text-pink-300"
+            ><i class="fab fa-instagram text-2xl"></i
+          ></a>
+        </div>
+        <p class="text-gray-400">
+          Made with <i class="fas fa-heart text-pink-500 heartbeat"></i> for the
+          love of my life
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById("mobile-menu-button")
+        .addEventListener("click", function () {
+          document.getElementById("mobile-menu").classList.toggle("hidden");
+        });
+
+      // Filtering Memories (by month)
+      const filterBtns = document.querySelectorAll(".gallery-filter");
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          const filter = btn.dataset.filter;
+          filterMemories(filter);
+        });
+      });
+
+      // global observer so we can observe newly shown cards
+      let cardsObserver = null;
+      function setupAnimations() {
+        cardsObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                // stop observing after first reveal
+                cardsObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.2 }
+        );
+        document
+          .querySelectorAll(".memory-card:not(.hidden)")
+          .forEach((card) => cardsObserver.observe(card));
+      }
+
+      function filterMemories(category) {
+        const cards = document.querySelectorAll(".memory-card");
+        cards.forEach((card) => {
+          const match =
+            category === "all" || card.dataset.category === category;
+
+          if (match && card.classList.contains("hidden")) {
+            // Fade-in
+            card.classList.remove("hidden", "fade-out");
+            card.classList.add("fade-in");
+            // add visible immediately for nicer UX
+            requestAnimationFrame(() => card.classList.add("visible"));
+            setTimeout(() => {
+              card.classList.remove("fade-in");
+              if (cardsObserver) {
+                try {
+                  cardsObserver.observe(card);
+                } catch (e) {}
+              }
+            }, 500);
+          } else if (!match && !card.classList.contains("hidden")) {
+            // Fade-out
+            card.classList.add("fade-out");
+            card.classList.remove("visible");
+            if (cardsObserver) {
+              try {
+                cardsObserver.unobserve(card);
+              } catch (e) {}
+            }
+            setTimeout(() => card.classList.add("hidden"), 500);
+          }
+        });
+      }
+
+      // Lightbox behavior for static cards (UPDATED to use <img>)
+      const lightbox = document.getElementById("memory-lightbox");
+      const lightboxImage = document.getElementById("lightbox-image");
+      const lightboxTitle = document.getElementById("lightbox-title");
+      const lightboxDate = document.getElementById("lightbox-date");
+
+      function bindLightboxButtons() {
+        document.querySelectorAll(".view-memory").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const card = btn.closest(".memory-card");
+            const imageDiv = card.querySelector(".memory-image");
+
+            // Get the actual background image URL
+            const bg = imageDiv.style.backgroundImage; // e.g., url("images/memory-137.png")
+            const url = bg.slice(5, -2); // removes url("") and quotes
+
+            // Set lightbox image
+            lightboxImage.src = url;
+            lightboxImage.alt = `Memory ${card.dataset.id || ""}`;
+
+            // Populate date
+            lightboxDate.textContent =
+              card.querySelector(".memory-date").textContent;
+
+            // Optionally, show memory id as title
+            lightboxTitle.textContent = `Memory ${card.dataset.id || ""}`;
+
+            // Open lightbox
+            lightbox.classList.add("active");
+          });
+        });
+      }
+
+      // Lightbox close
+      document
+        .getElementById("close-lightbox")
+        .addEventListener("click", () => {
+          lightbox.classList.remove("active");
+        });
+      window.addEventListener("click", (e) => {
+        if (e.target === lightbox) lightbox.classList.remove("active");
+      });
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") lightbox.classList.remove("active");
+      });
+
+      // Counters
+      function animateCounter(id, target, finalText = null) {
+        const el = document.getElementById(id);
+        let count = 0;
+        const step = Math.ceil(Math.max(1, target) / 100);
+
+        function update() {
+          count += step;
+          if (count < target) {
+            el.textContent = count.toLocaleString();
+            requestAnimationFrame(update);
+          } else {
+            // If finalText is set, only show that, not the number
+            if (finalText) {
+              el.textContent = finalText;
+            } else {
+              el.textContent = target.toLocaleString();
+            }
+          }
+        }
+        update();
+      }
+
+      function startCounters() {
+        animateCounter("total-memories", 139); // shows 139
+        animateCounter("together-days", 538); // shows 538
+        animateCounter("places-visited", 200, "A Lifetime More"); // animates up, ends with text
+        animateCounter("new-memories", 200, "∞"); // animates up, ends with ∞
+      }
+
+      const counterSection = document.getElementById("memory-counter");
+      const counterObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              counterSection.classList.add("animate");
+              document
+                .querySelectorAll(".counter-item")
+                .forEach((it, i) =>
+                  setTimeout(() => it.classList.add("animate"), i * 120)
+                );
+              startCounters();
+              counterObserver.unobserve(counterSection);
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+      counterObserver.observe(counterSection);
+
+      // DOMContentLoaded initialization
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll(".memory-card")
+          .forEach((c) => c.classList.remove("hidden"));
+        filterMemories("all");
+        setupAnimations();
+        bindLightboxButtons();
+      });
+    </script>
+  </body>
+</html>

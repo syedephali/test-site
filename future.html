@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secret Messages | Our Love Story</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #fd2d78;
+        --secondary: #5c67de;
+        --accent: #ffaac9;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
+        min-height: 100vh;
+        color: #333;
+        overflow-x: hidden;
+      }
+
+      .heading-font {
+        font-family: "Playfair Display", serif;
+      }
+
+      .message-card {
+        transition: all 0.3s ease;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        position: relative;
+      }
+
+      .message-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .message-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .message-card:hover .message-content {
+        opacity: 1;
+      }
+
+      .envelope-container {
+        position: relative;
+        width: 300px;
+        height: 200px;
+        margin: 40px auto;
+        perspective: 1000px;
+      }
+
+      .envelope {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 0.8s ease;
+        cursor: pointer;
+      }
+
+      .envelope.open {
+        transform: rotateX(180deg);
+      }
+
+      .envelope-front,
+      .envelope-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .envelope-front {
+        background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .envelope-front::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        left: 0;
+        border-left: 150px solid transparent;
+        border-right: 150px solid transparent;
+        border-bottom: 60px solid #ff7bac;
+        z-index: 3;
+      }
+
+      .envelope-back {
+        background: linear-gradient(45deg, #fad0c4, #ff9a9e);
+        transform: rotateX(180deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .letter {
+        width: 90%;
+        height: 90%;
+        background: white;
+        border-radius: 4px;
+        padding: 15px;
+        overflow-y: auto;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        /* Fix for mobile scrolling */
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Improved scrolling for mobile */
+      @media (max-width: 640px) {
+        .envelope-container {
+          width: 280px;
+          height: 180px;
+        }
+
+        .envelope-front::before {
+          top: -50px;
+          border-left: 140px solid transparent;
+          border-right: 140px solid transparent;
+          border-bottom: 50px solid #ff7bac;
+        }
+
+        .letter {
+          padding: 12px;
+          font-size: 14px;
+        }
+
+        .letter p {
+          margin-bottom: 10px;
+        }
+      }
+
+      .heartbeat {
+        animation: heartbeat 1.5s ease-in-out infinite both;
+      }
+
+      @keyframes heartbeat {
+        from {
+          transform: scale(1);
+          transform-origin: center center;
+          animation-timing-function: ease-out;
+        }
+        10% {
+          transform: scale(0.91);
+          animation-timing-function: ease-in;
+        }
+        17% {
+          transform: scale(0.98);
+          animation-timing-function: ease-out;
+        }
+        33% {
+          transform: scale(0.87);
+          animation-timing-function: ease-in;
+        }
+        45% {
+          transform: scale(1);
+          animation-timing-function: ease-out;
+        }
+      }
+
+      .floating {
+        animation-name: floating;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translate(0, 0px);
+        }
+        50% {
+          transform: translate(0, 15px);
+        }
+        100% {
+          transform: translate(0, -0px);
+        }
+      }
+
+      .secret-message {
+        position: relative;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .secret-message::before {
+        content: "Click to reveal";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, #fd2d78, #ff7bac);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      .secret-message.revealed::before {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      .nav-btn {
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .typewriter {
+        overflow: hidden;
+        border-right: 0.15em solid var(--primary);
+        white-space: nowrap;
+        animation: typing 3.5s steps(40, end),
+          blink-caret 0.75s step-end infinite;
+      }
+
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: var(--primary);
+        }
+      }
+
+      .fade-in {
+        animation: fadeIn 1s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .love-letter {
+        background: linear-gradient(135deg, #fff5f7 0%, #f8f9ff 100%);
+        border-left: 4px solid var(--primary);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        font-style: italic;
+        line-height: 1.8;
+      }
+
+      .mobile-menu-open {
+        display: block !important;
+        animation: slideDown 0.3s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Improved envelope design */
+      .envelope-heart {
+        color: white;
+        font-size: 2rem;
+        z-index: 4;
+        position: relative;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Improved message card hover effects */
+      .message-card {
+        transform: translateZ(0);
+        will-change: transform;
+      }
+
+      /* Pulse animation for play button */
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+      }
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Video container responsive sizing */
+      .video-container {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        margin: 0 auto;
+      }
+
+      /* Adjust video size for different screens */
+      @media (max-width: 767px) {
+        .video-container {
+          padding-bottom: 56.25%; /* 16:9 aspect ratio for mobile */
+        }
+      }
+
+      @media (min-width: 768px) {
+        .video-container {
+          width: 80%;
+          padding-bottom: 45%; /* Adjusted aspect ratio for tablets */
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .video-container {
+          width: 70%;
+          max-width: 800px;
+          padding-bottom: 39.375%; /* 16:9 aspect ratio for 800px width */
+        }
+      }
+
+      @media (min-width: 1280px) {
+        .video-container {
+          width: 60%;
+          max-width: 700px;
+          padding-bottom: 34.5%; /* 16:9 aspect ratio for 700px width */
+        }
+      }
+
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.3s ease;
+        border-radius: 12px;
+      }
+
+      .play-overlay:hover {
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .play-button {
+        width: 80px;
+        height: 80px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        animation: pulse 2s infinite;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <a href="index.html" class="text-xl font-bold text-pink-600"
+            ><i class="fas fa-heart mr-2"></i> Our Love Story</a
+          >
+          <div class="hidden md:flex space-x-6">
+            <a href="index.html" class="text-gray-600 hover:text-pink-600"
+              >Home</a
+            >
+            <a href="story.html" class="text-gray-600 hover:text-pink-600"
+              >Our Story</a
+            >
+            <a href="memories.html" class="text-gray-600 hover:text-pink-600"
+              >Memories</a
+            >
+            <a href="love-meter.html" class="text-gray-600 hover:text-pink-600"
+              >Love Meter</a
+            >
+            <a href="future.html" class="text-gray-600 hover:text-pink-600"
+              >Future</a
+            >
+            <a href="messages.html" class="text-pink-600 font-semibold"
+              >Messages</a
+            >
+          </div>
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-600">
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden px-4 pt-2 pb-4 bg-white border-t">
+        <div class="flex flex-col space-y-3">
+          <a href="index.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Home</a
+          >
+          <a href="story.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Our Story</a
+          >
+          <a href="memories.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Memories</a
+          >
+          <a
+            href="love-meter.html"
+            class="text-gray-600 hover:text-pink-600 py-2"
+            >Love Meter</a
+          >
+          <a href="future.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Future</a
+          >
+          <a href="messages.html" class="text-pink-600 font-semibold py-2"
+            >Messages</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header
+      class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-16"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold heading-font mb-4">
+          My Secret Messages
+        </h1>
+        <p class="text-xl max-w-3xl mx-auto">
+          Hidden messages from my heart to yours, waiting to be discovered
+        </p>
+      </div>
+    </header>
+
+    <!-- Envelope Love Letter Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            A Letter for You
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto pb-4">
+            Click on the envelope to reveal my heartfelt message
+          </p>
+        </div>
+
+        <div class="envelope-container">
+          <div class="envelope" id="envelope">
+            <div class="envelope-front">
+              <div class="envelope-heart">
+                <i class="fas fa-heart"></i>
+              </div>
+            </div>
+            <div class="envelope-back">
+              <div class="letter">
+                <h3 class="text-xl font-bold mb-4 text-center">
+                  My Dearest Love Marian,
+                </h3>
+                <p class="text-gray-700 mb-4">
+                  Marian, from the moment you entered my life, everything
+                  changed. At first, I thought of you as just a wonderful
+                  friend. We talked and stayed in touch every single day, from
+                  the moment we woke up until we went to sleep, sharing every
+                  little detail of our lives. Then we started meeting, walking
+                  and talking about our past, our dreams, our future, and
+                  everything in between. And somehow, through all of this, I
+                  slowly fell in love with you, so slowly that I didn't even
+                  realize it at first.
+                </p>
+                <p class="text-gray-700 mb-4">
+                  I still remember the way your hair smelled, your perfume
+                  lingering in the air. Even after returning home from seeing
+                  you, or on days when we couldn't meet, I would crave that
+                  scent, that presence. Being away from you made me restless. My
+                  love for you kept growing quietly, and one day I finally
+                  confessed it.
+                </p>
+                <p class="text-gray-700 mb-4">
+                  Fast forward to today, and I've shared so many firsts with
+                  you. I can't imagine a life without you. Even through all the
+                  fights, the arguments, even when I've said things I didn't
+                  mean, I still can't imagine a life where you're not by my
+                  side. Every harsh word or moment of frustration comes from a
+                  place of care, Marian, I only want what's best for you.
+                </p>
+                <p class="text-gray-700 mb-4">
+                  I promise to always be there for you, to support your dreams,
+                  to celebrate your successes, and to hold you close during
+                  life's challenges. You are not just my partner, you are my
+                  best friend, my confidant, and my greatest blessing. No matter
+                  what the future holds, I vow to stand by you, to love you more
+                  with each passing day, and to always be your biggest
+                  supporter. You are my everything, Marian.
+                </p>
+                <p class="text-center mt-6 font-bold text-pink-600">
+                  Forever yours,<br />Syed Sowad Ephraim Ali
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Secret Messages Grid -->
+    <section class="py-16 bg-pink-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Hidden Messages
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Hover over each card to reveal my secret messages for you
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Message 1 -->
+          <div
+            class="message-card bg-gradient-to-r from-purple-400 to-pink-400 h-64 rounded-xl"
+          >
+            <div class="message-content">
+              <p class="text-base font-semibold">
+                Whenever we fight or argue, even if I don't reach out first, I
+                can't stay at ease. I find myself restless, constantly checking
+                my phone, waiting for that first message from you.
+              </p>
+            </div>
+          </div>
+
+          <!-- Message 2 -->
+          <div
+            class="message-card bg-gradient-to-r from-blue-400 to-teal-400 h-64 rounded-xl"
+          >
+            <div class="message-content">
+              <p class="text-base font-semibold">
+                I love how you always feed me with your own hands. Whenever I'm
+                with you, I never want to eat on my own, I just want to be fed
+                by you, to feel your care in every bite.
+              </p>
+            </div>
+          </div>
+
+          <!-- Message 3 -->
+          <div
+            class="message-card bg-gradient-to-r from-yellow-400 to-red-400 h-64 rounded-xl"
+          >
+            <div class="message-content">
+              <p class="text-base font-semibold">
+                When I'm with you, I always want you close, pressed against me,
+                because I crave your touch. When I don't feel your body next to
+                mine, I feel restless and incomplete.
+              </p>
+            </div>
+          </div>
+
+          <!-- Message 4 -->
+          <div
+            class="message-card bg-gradient-to-r from-green-400 to-blue-400 h-64 rounded-xl"
+          >
+            <div class="message-content">
+              <p class="text-base font-semibold">
+                At night, I miss having you beside me more than anything. I long
+                for you next to me as I sleep, so I can feel at peace and truly
+                at home.
+              </p>
+            </div>
+          </div>
+
+          <!-- Message 5 -->
+          <div
+            class="message-card bg-gradient-to-r from-pink-400 to-purple-400 h-64 rounded-xl"
+          >
+            <div class="message-content">
+              <p class="text-base font-semibold">
+                You've inspired me to work harder, to strive for more, all for
+                you and our future together. Because of you, I've become more
+                focused, more serious about life and what truly matters.
+              </p>
+            </div>
+          </div>
+
+          <!-- Message 6 -->
+          <div
+            class="message-card bg-gradient-to-r from-red-400 to-orange-400 h-64 rounded-xl"
+          >
+            <div class="message-content">
+              <p class="text-base font-semibold">
+                You know how much I love your ass, especially the curves, the
+                size. I crave the feel of your ass against my body every single
+                day, to touch it, to feel it. When you move, I can't take my
+                eyes off your ass, I'm completely captivated by your ass.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Click to Reveal Messages -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Special Messages
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Click on each message to reveal what's in my heart
+          </p>
+        </div>
+
+        <div class="max-w-3xl mx-auto">
+          <!-- Secret Message 1 -->
+          <div
+            class="secret-message"
+            data-message="You're the first thing I think about when I wake up and the last thing I think about before I sleep."
+          >
+            <p class="text-lg font-semibold text-center">Message #1</p>
+          </div>
+
+          <!-- Secret Message 2 -->
+          <div
+            class="secret-message"
+            data-message="I love our deep conversations about everything and nothing."
+          >
+            <p class="text-lg font-semibold text-center">Message #2</p>
+          </div>
+
+          <!-- Secret Message 3 -->
+          <div
+            class="secret-message"
+            data-message="I am obsessed with your ass, the size the curve."
+          >
+            <p class="text-lg font-semibold text-center">Message #3</p>
+          </div>
+
+          <!-- Secret Message 4 -->
+          <div
+            class="secret-message"
+            data-message="Whenever, we are alone, I always want to kiss you."
+          >
+            <p class="text-lg font-semibold text-center">Message #4</p>
+          </div>
+
+          <!-- Secret Message 5 -->
+          <div
+            class="secret-message"
+            data-message="I love smelling your body, every inch of it, literally."
+          >
+            <p class="text-lg font-semibold text-center">Message #5</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Love Letter Section -->
+    <section class="py-16 bg-pink-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            My Heart to Yours
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            A collection of love letters written just for you
+          </p>
+        </div>
+
+        <div class="max-w-3xl mx-auto">
+          <div class="love-letter fade-in">
+            <h3 class="text-2xl font-bold heading-font mb-4 text-center">
+              Why I Love You
+            </h3>
+            <p class="mb-4">
+              I love you for everything you are and everything you make me feel.
+              You are the reason my heart races, my thoughts linger, and my soul
+              feels alive. I love your smile, the way your eyes light up, and
+              how just your presence makes the world feel right. I love your
+              curves, the way your body moves, every inch of you that I crave,
+              and the way I can't take my eyes off you. But more than that, I
+              love your soul—the way you inspire me to work harder, to dream
+              bigger, to become the best version of myself. You are my obsession
+              and my peace, my drive and my sanctuary. You make life beautiful,
+              purposeful, and full of hope. I love how you are the one I can
+              imagine my forever with, the one I want to hold through every
+              challenge, every triumph, every quiet moment, and every wild
+              adventure.
+            </p>
+            <p class="text-right font-semibold">- Syed Sowad Ephraim Ali</p>
+          </div>
+
+          <div class="love-letter fade-in mt-12">
+            <h3 class="text-2xl font-bold heading-font mb-4 text-center">
+              My Favorite Memories with You
+            </h3>
+            <p class="mb-4">
+              1. Our walks in front of Sangshad Bhaban and the Army Museum
+              almost daily, talking about life, dreams, and everything in
+              between. Every step felt lighter because you were there, and every
+              conversation deepened the connection I felt in my heart.
+            </p>
+            <p class="mb-4">
+              2. Our meets in Mollika, sitting with you as I ate, sharing
+              laughter, playful teasing, and fun conversations that made even
+              the simplest moments magical.
+            </p>
+            <p class="mb-4">
+              3. When you used to ask for my opinion before buying anything,
+              even when we were just friends. That simple gesture showed me how
+              much you cared and how important I was to you.
+            </p>
+            <p class="mb-4">
+              4. The Chittagong trip when I fell even harder for you in that
+              saree. Seeing you there, radiant and breathtaking, every laugh and
+              every look made me realize my heart was completely yours.
+            </p>
+            <p class="mb-4">
+              5. The day we first kissed, when everything else seemed to vanish,
+              leaving only you and me. That moment was sweet, tender, and
+              unforgettable, marking the beginning of the love I always dreamed
+              of.
+            </p>
+            <p class="mb-4">
+              6. Our first date when you wore that saree, you were stunning,
+              every smile lighting up my world. That day made me realize every
+              love story I'd read about before pales compared to what I felt
+              with you.
+            </p>
+            <p class="mb-4">
+              7. The special times we spent in March. Let me know tell much
+              about those two days here 😝.
+            </p>
+            <p class="mb-4">
+              8. The day we first went to Akib's house, and then what happened
+              there. Once again cant tell much about that day here as well 😝.
+            </p>
+            <p class="text-right font-semibold">
+              - Every moment with you is my favorite
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Message Generator -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Create Your Own Message
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Write a secret message for me to discover
+          </p>
+        </div>
+
+        <div class="max-w-2xl mx-auto bg-pink-50 p-8 rounded-xl shadow-lg">
+          <form id="message-form">
+            <div class="mb-6">
+              <label for="message" class="block text-gray-700 mb-2"
+                >Your Secret Message</label
+              >
+              <textarea
+                id="message"
+                rows="4"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                placeholder="Write your heartfelt message here..."
+              ></textarea>
+            </div>
+
+            <div class="text-center">
+              <button
+                type="submit"
+                class="bg-pink-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-700 transition-colors"
+              >
+                Save Message
+              </button>
+            </div>
+          </form>
+
+          <div
+            id="message-output"
+            class="mt-8 hidden p-6 bg-white rounded-lg shadow"
+          >
+            <h3 class="text-xl font-bold mb-4">Your Saved Message</h3>
+            <p id="saved-message" class="text-gray-700"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- YouTube Video Section - FIXED -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Watch Our Special Video
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            A heartfelt video I made just for you
+          </p>
+        </div>
+
+        <!-- Video Container - Fixed Structure -->
+        <div class="video-container">
+          <div id="play-overlay" class="play-overlay">
+            <div class="play-button">▶</div>
+          </div>
+          <!-- This is where the iframe will be inserted -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section
+      class="py-16 bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold heading-font mb-6">
+          Continue Our Journey
+        </h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">
+          Explore other aspects of our love story
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <a
+            href="story.html"
+            class="bg-white text-pink-600 px-6 py-3 rounded-full font-semibold nav-btn"
+            >Our Story</a
+          >
+          <a
+            href="memories.html"
+            class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold nav-btn"
+            >Memories</a
+          >
+          <a
+            href="future.html"
+            class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold nav-btn"
+            >Future Together</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+      <div class="container mx-auto px-4 text-center">
+        <h3 class="text-2xl font-bold heading-font mb-4">Forever Yours</h3>
+        <p class="max-w-2xl mx-auto mb-6">
+          "I swear I couldn't love you more than I do right now, and yet I know
+          I will tomorrow."
+        </p>
+        <div class="flex justify-center space-x-6 mb-6">
+          <a
+            href="https://www.facebook.com/heavenly.yaksha001/"
+            class="text-pink-400 hover:text-pink-300"
+            ><i class="fab fa-facebook text-2xl"></i
+          ></a>
+          <a
+            href="https://www.instagram.com/godposeidon001/"
+            class="text-pink-400 hover:text-pink-300"
+            ><i class="fab fa-instagram text-2xl"></i
+          ></a>
+        </div>
+        <p class="text-gray-400">
+          Made with <i class="fas fa-heart text-pink-500 heartbeat"></i> for the
+          love of my life
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle with improved functionality
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      mobileMenuButton.addEventListener("click", function () {
+        mobileMenu.classList.toggle("mobile-menu-open");
+        mobileMenu.classList.toggle("hidden");
+
+        // Change icon based on menu state
+        const icon = mobileMenuButton.querySelector("i");
+        if (mobileMenu.classList.contains("mobile-menu-open")) {
+          icon.classList.remove("fa-bars");
+          icon.classList.add("fa-times");
+        } else {
+          icon.classList.remove("fa-times");
+          icon.classList.add("fa-bars");
+        }
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener("click", function (event) {
+        if (
+          !mobileMenu.contains(event.target) &&
+          !mobileMenuButton.contains(event.target) &&
+          mobileMenu.classList.contains("mobile-menu-open")
+        ) {
+          mobileMenu.classList.remove("mobile-menu-open");
+          mobileMenu.classList.add("hidden");
+
+          const icon = mobileMenuButton.querySelector("i");
+          icon.classList.remove("fa-times");
+          icon.classList.add("fa-bars");
+        }
+      });
+
+      // Fixed YouTube video functionality
+      const playOverlay = document.getElementById("play-overlay");
+      const videoContainer = document.querySelector(".video-container");
+
+      playOverlay.addEventListener("click", function () {
+        // Remove overlay
+        playOverlay.style.display = "none";
+
+        // Create and insert iframe with proper sizing
+        const iframe = document.createElement("iframe");
+        iframe.src = "https://www.youtube.com/embed/45L0LeK7CHc?autoplay=1";
+        iframe.title = "Our Love Video";
+        iframe.frameBorder = "0";
+        iframe.allow =
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        iframe.allowFullscreen = true;
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.position = "absolute";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+
+        // Append the iframe to the video container
+        videoContainer.appendChild(iframe);
+      });
+
+      // Envelope interaction - completely redesigned
+      const envelope = document.getElementById("envelope");
+      envelope.addEventListener("click", function () {
+        this.classList.toggle("open");
+      });
+
+      // Secret message reveal on click with improved animation
+      const secretMessages = document.querySelectorAll(".secret-message");
+      secretMessages.forEach((message) => {
+        message.addEventListener("click", function () {
+          if (!this.classList.contains("revealed")) {
+            const messageText = this.getAttribute("data-message");
+            this.querySelector("p").textContent = messageText;
+            this.classList.add("revealed");
+
+            // Add a nice animation effect
+            this.style.transform = "scale(1.02)";
+            setTimeout(() => {
+              this.style.transform = "scale(1)";
+            }, 200);
+          }
+        });
+      });
+
+      // Message form submission with validation
+      const messageForm = document.getElementById("message-form");
+      const messageOutput = document.getElementById("message-output");
+      const savedMessage = document.getElementById("saved-message");
+
+      messageForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const messageText = document.getElementById("message").value;
+
+        if (messageText.trim() !== "") {
+          savedMessage.textContent = messageText;
+          messageOutput.classList.remove("hidden");
+
+          // Add a nice appear animation
+          messageOutput.style.opacity = "0";
+          messageOutput.style.transform = "translateY(20px)";
+
+          setTimeout(() => {
+            messageOutput.style.transition = "all 0.5s ease";
+            messageOutput.style.opacity = "1";
+            messageOutput.style.transform = "translateY(0)";
+          }, 10);
+
+          // Save to local storage
+          localStorage.setItem("loveMessage", messageText);
+
+          // Reset form
+          messageForm.reset();
+        } else {
+          // Show error animation
+          const messageInput = document.getElementById("message");
+          messageInput.style.borderColor = "red";
+          messageInput.animate(
+            [
+              { transform: "translateX(0)" },
+              { transform: "translateX(-5px)" },
+              { transform: "translateX(5px)" },
+              { transform: "translateX(-5px)" },
+              { transform: "translateX(0)" },
+            ],
+            {
+              duration: 300,
+              iterations: 1,
+            }
+          );
+
+          setTimeout(() => {
+            messageInput.style.borderColor = "";
+          }, 1000);
+        }
+      });
+
+      // Check for saved message on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        const savedMessageText = localStorage.getItem("loveMessage");
+        if (savedMessageText) {
+          savedMessage.textContent = savedMessageText;
+          messageOutput.classList.remove("hidden");
+        }
+
+        // Add animations to elements as they come into view
+        const observerOptions = {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.1,
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        }, observerOptions);
+
+        // Observe all sections for animation
+        document.querySelectorAll("section").forEach((section) => {
+          section.style.opacity = "0";
+          section.style.transform = "translateY(20px)";
+          section.style.transition = "all 0.6s ease";
+          observer.observe(section);
+        });
+      });
+    </script>
+  </body>
+</html>

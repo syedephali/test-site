@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Meter | Our Love Story</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #fd2d78;
+            --secondary: #5c67de;
+            --accent: #ffaac9;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
+            min-height: 100vh;
+            color: #333;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        .heading-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .love-meter-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .meter-needle {
+            width: 4px;
+            height: 120px;
+            background: var(--primary);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) rotate(-90deg);
+            transform-origin: bottom center;
+            transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 2;
+        }
+        
+        .meter-scale {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(90deg, #e6e6e6, #f0f0f0);
+            border-radius: 100px 100px 0 0;
+            overflow: hidden;
+        }
+        
+        .meter-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 0%;
+            background: linear-gradient(90deg, #fd2d78, #ff7bac);
+            transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .meter-markers {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        
+        .meter-marker {
+            width: 2px;
+            height: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            margin-top: auto;
+        }
+        
+        .meter-marker.major {
+            height: 25px;
+            width: 3px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .meter-labels {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite both;
+        }
+        
+        @keyframes heartbeat {
+            from {
+                transform: scale(1);
+                transform-origin: center center;
+                animation-timing-function: ease-out;
+            }
+            10% {
+                transform: scale(0.91);
+                animation-timing-function: ease-in;
+            }
+            17% {
+                transform: scale(0.98);
+                animation-timing-function: ease-out;
+            }
+            33% {
+                transform: scale(0.87);
+                animation-timing-function: ease-in;
+            }
+            45% {
+                transform: scale(1);
+                animation-timing-function: ease-out;
+            }
+        }
+        
+        .floating { 
+            animation-name: floating;
+            animation-duration: 3s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+        
+        @keyframes floating {
+            0% { transform: translate(0, 0px); }
+            50% { transform: translate(0, 15px); }
+            100% { transform: translate(0, -0px); } 
+        }
+        
+        .love-quiz label {
+            display: block;
+            padding: 15px 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .love-quiz label:hover {
+            background: #f0f0f0;
+        }
+        
+        .love-quiz input[type="radio"]:checked + label {
+            background: #ffe6ef;
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .result-card {
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: translateY(30px);
+            display: none;
+        }
+        
+        .result-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fd2d78, #ff7bac);
+            width: 0%;
+            transition: width 1s ease;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            opacity: 0;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                top: -50px;
+                transform: translateX(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                top: 100vh;
+                transform: translateX(20px) rotate(360deg);
+            }
+        }
+        
+        @keyframes confettiSide {
+            0% {
+                opacity: 1;
+                top: -50px;
+                transform: translateX(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                top: 100vh;
+                transform: translateX(-20px) rotate(-360deg);
+            }
+        }
+        
+        .nav-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* New styles for improvements */
+        .question-container {
+            transition: all 0.3s ease;
+        }
+        
+        .question-container.active {
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+        }
+        
+        .quiz-progress {
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .quiz-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fd2d78, #ff7bac);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(253, 45, 120, 0.7);
+            }
+            
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(253, 45, 120, 0);
+            }
+            
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(253, 45, 120, 0);
+            }
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .stat-value {
+            transition: all 0.5s ease;
+        }
+        
+        /* Animation for stats section */
+        .stats-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        
+        .stats-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Animation for progress bars in stats */
+        .animated-progress {
+            width: 0%;
+            transition: width 1.5s ease-in-out;
+        }
+        
+        /* Number counting animation */
+        .counting {
+            transition: all 0.5s ease;
+        }
+        
+        /* Celebration animation for high scores */
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .celebrate {
+            animation: celebrate 0.5s ease-in-out 3;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="index.html" class="text-xl font-bold text-pink-600"><i class="fas fa-heart mr-2"></i> Our Love Story</a>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="text-gray-600 hover:text-pink-600">Home</a>
+                    <a href="story.html" class="text-gray-600 hover:text-pink-600">Our Story</a>
+                    <a href="memories.html" class="text-gray-600 hover:text-pink-600">Memories</a>
+                    <a href="love-meter.html" class="text-pink-600 font-semibold">Love Meter</a>
+                    <a href="future.html" class="text-gray-600 hover:text-pink-600">Future</a>
+                    <a href="messages.html" class="text-gray-600 hover:text-pink-600">Messages</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden px-4 pt-2 pb-4 bg-white border-t">
+            <div class="flex flex-col space-y-3">
+                <a href="index.html" class="text-gray-600 hover:text-pink-600 py-2">Home</a>
+                <a href="story.html" class="text-gray-600 hover:text-pink-600 py-2">Our Story</a>
+                <a href="memories.html" class="text-gray-600 hover:text-pink-600 py-2">Memories</a>
+                <a href="love-meter.html" class="text-pink-600 font-semibold py-2">Love Meter</a>
+                <a href="future.html" class="text-gray-600 hover:text-pink-600 py-2">Future</a>
+                <a href="messages.html" class="text-gray-600 hover:text-pink-600 py-2">Messages</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold heading-font mb-4">Our Love Meter</h1>
+            <p class="text-xl max-w-3xl mx-auto">Discover how perfectly matched we are and how our love measures up!</p>
+        </div>
+    </header>
+
+    <!-- Love Meter Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto love-meter-container p-8">
+                <h2 class="text-3xl font-bold heading-font text-center mb-2">How Strong Is Our Love?</h2>
+                <p class="text-center text-gray-600 mb-8">Answer these questions to find out our compatibility score</p>
+                
+                <!-- Progress Bar -->
+                <div class="quiz-progress mb-6">
+                    <div class="quiz-progress-fill" id="quiz-progress"></div>
+                </div>
+                
+                <!-- Love Meter Visual -->
+                <div class="mb-12 relative">
+                    <div class="meter-scale">
+                        <div class="meter-fill" id="meter-fill"></div>
+                        <div class="meter-markers">
+                            <div class="meter-marker"></div>
+                            <div class="meter-marker"></div>
+                            <div class="meter-marker major"></div>
+                            <div class="meter-marker"></div>
+                            <div class="meter-marker"></div>
+                            <div class="meter-marker major"></div>
+                            <div class="meter-marker"></div>
+                            <div class="meter-marker"></div>
+                            <div class="meter-marker major"></div>
+                            <div class="meter-marker"></div>
+                            <div class="meter-marker"></div>
+                        </div>
+                        <div class="meter-needle" id="meter-needle"></div>
+                    </div>
+                    <div class="meter-labels">
+                        <span>0%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                    </div>
+                    
+                    <div class="text-center mt-12">
+                        <div class="text-5xl font-bold text-pink-600 mb-2" id="love-score">0%</div>
+                        <div class="text-gray-600" id="love-status">Take the quiz to measure our love!</div>
+                    </div>
+                </div>
+                
+                <!-- Love Quiz -->
+                <form id="love-quiz" class="love-quiz">
+                    <!-- Question 1 -->
+                    <div class="mb-8 question-container" id="question-1">
+                        <h3 class="text-xl font-bold mb-4">1. How did you feel when we first met?</h3>
+                        <div class="space-y-3">
+                            <input type="radio" name="q1" value="10" id="q1a1" class="hidden">
+                            <label for="q1a1">I knew you were the one immediately</label>
+                            
+                            <input type="radio" name="q1" value="8" id="q1a2" class="hidden">
+                            <label for="q1a2">I felt a strong connection</label>
+                            
+                            <input type="radio" name="q1" value="6" id="q1a3" class="hidden">
+                            <label for="q1a3">I thought you were interesting</label>
+                            
+                            <input type="radio" name="q1" value="4" id="q1a4" class="hidden">
+                            <label for="q1a4">I wasn't sure what to think</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 2 -->
+                    <div class="mb-8 question-container" id="question-2">
+                        <h3 class="text-xl font-bold mb-4">2. What do you love most about our relationship?</h3>
+                        <div class="space-y-3">
+                            <input type="radio" name="q2" value="10" id="q2a1" class="hidden">
+                            <label for="q2a1">Our deep emotional connection</label>
+                            
+                            <input type="radio" name="q2" value="8" id="q2a2" class="hidden">
+                            <label for="q2a2">How we make each other laugh</label>
+                            
+                            <input type="radio" name="q2" value="6" id="q2a3" class="hidden">
+                            <label for="q2a3">Our shared interests and hobbies</label>
+                            
+                            <input type="radio" name="q2" value="4" id="q2a4" class="hidden">
+                            <label for="q2a4">We're comfortable with each other</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 3 -->
+                    <div class="mb-8 question-container" id="question-3">
+                        <h3 class="text-xl font-bold mb-4">3. How do you feel when we're apart?</h3>
+                        <div class="space-y-3">
+                            <input type="radio" name="q3" value="10" id="q3a1" class="hidden">
+                            <label for="q3a1">I count the moments until we're together again</label>
+                            
+                            <input type="radio" name="q3" value="8" id="q3a2" class="hidden">
+                            <label for="q3a2">I miss you but enjoy my alone time too</label>
+                            
+                            <input type="radio" name="q3" value="6" id="q3a3" class="hidden">
+                            <label for="q3a3">It's nice to have some space occasionally</label>
+                            
+                            <input type="radio" name="q3" value="4" id="q3a4" class="hidden">
+                            <label for="q3a4">I don't think about it much</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 4 -->
+                    <div class="mb-8 question-container" id="question-4">
+                        <h3 class="text-xl font-bold mb-4">4. How do you see our future together?</h3>
+                        <div class="space-y-3">
+                            <input type="radio" name="q4" value="10" id="q4a1" class="hidden">
+                            <label for="q4a1">I can't imagine a future without you</label>
+                            
+                            <input type="radio" name="q4" value="8" id="q4a2" class="hidden">
+                            <label for="q4a2">I see us growing old together</label>
+                            
+                            <input type="radio" name="q4" value="6" id="q4a3" class="hidden">
+                            <label for="q4a3">I hope we'll be together for a long time</label>
+                            
+                            <input type="radio" name="q4" value="4" id="q4a4" class="hidden">
+                            <label for="q4a4">I take things one day at a time</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Question 5 -->
+                    <div class="mb-8 question-container" id="question-5">
+                        <h3 class="text-xl font-bold mb-4">5. What would you do to make me happy?</h3>
+                        <div class="space-y-3">
+                            <input type="radio" name="q5" value="10" id="q5a1" class="hidden">
+                            <label for="q5a1">Anything and everything</label>
+                            
+                            <input type="radio" name="q5" value="8" id="q5a2" class="hidden">
+                            <label for="q5a2">Go out of my way to surprise you</label>
+                            
+                            <input type="radio" name="q5" value="6" id="q5a3" class="hidden">
+                            <label for="q5a3">Be there when you need me</label>
+                            
+                            <input type="radio" name="q5" value="4" id="q5a4" class="hidden">
+                            <label for="q5a4">Try to understand what you need</label>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="bg-pink-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-700 transition-colors pulse">
+                            Calculate Our Love
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Result Section -->
+                <div id="result-card" class="result-card mt-12 p-8 bg-pink-50 rounded-xl text-center">
+                    <div class="text-5xl text-pink-600 mb-4">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold heading-font mb-4" id="result-title">Perfect Match!</h3>
+                    <p class="text-gray-700 mb-6" id="result-description">Our love is strong and will stand the test of time. We're meant to be together forever!</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-2xl mx-auto">
+                        <div>
+                            <h4 class="font-bold mb-2">Our Strengths</h4>
+                            <ul class="space-y-2" id="strengths-list">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Deep emotional connection</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Strong communication</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Shared values</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-2">To Improve</h4>
+                            <ul class="space-y-2" id="improvements-list">
+                                <li class="flex items-center"><i class="fas fa-star text-yellow-500 mr-2"></i> More date nights</li>
+                                <li class="flex items-center"><i class="fas fa-star text-yellow-500 mr-2"></i> Better conflict resolution</li>
+                                <li class="flex items-center"><i class="fas fa-star text-yellow-500 mr-2"></i> Surprise each other more</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <button id="retry-quiz" class="border border-pink-600 text-pink-600 px-6 py-2 rounded-full font-semibold hover:bg-pink-600 hover:text-white transition-colors">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Love Stats Section -->
+    <section id="love-stats" class="py-16 bg-pink-50 stats-section">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">Our Love Statistics</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Numbers that prove our love is special <span class="tooltip"><i class="fas fa-info-circle text-pink-500"></i><span class="tooltiptext">These values change slightly each time you visit this page!</span></span></p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">Compatibility Factors</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Communication</span>
+                                <span class="stat-value" id="communication-value">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill animated-progress" id="communication-bar"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Trust</span>
+                                <span class="stat-value" id="trust-value">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill animated-progress" id="trust-bar"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Intimacy</span>
+                                <span class="stat-value" id="intimacy-value">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill animated-progress" id="intimacy-bar"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Fun Together</span>
+                                <span class="stat-value" id="fun-value">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill animated-progress" id="fun-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">Our Love Timeline</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span>Days Together</span>
+                            <span class="text-pink-600 font-bold stat-value" id="days-value">0</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span>Memories Made</span>
+                            <span class="text-pink-600 font-bold stat-value" id="memories-value">0</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span>Adventures</span>
+                            <span class="text-pink-600 font-bold stat-value" id="adventures-value">0</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span>Future Plans</span>
+                            <span class="text-pink-600 font-bold">∞</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <div class="inline-flex items-center bg-pink-100 text-pink-800 px-4 py-2 rounded-full">
+                            <i class="fas fa-heart mr-2"></i>
+                            <span>Perfect Match</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold heading-font mb-6">Continue Our Journey</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                Explore other aspects of our love story
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <a href="story.html" class="bg-white text-pink-600 px-6 py-3 rounded-full font-semibold nav-btn">Our Story</a>
+                <a href="memories.html" class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold nav-btn">Memories</a>
+                <a href="future.html" class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold nav-btn">Future Together</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-2xl font-bold heading-font mb-4">Forever Yours</h3>
+            <p class="max-w-2xl mx-auto mb-6">"I swear I couldn't love you more than I do right now, and yet I know I will tomorrow."</p>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="https://www.facebook.com/heavenly.yaksha001/" class="text-pink-400 hover:text-pink-300"><i class="fab fa-facebook text-2xl"></i></a>
+                <a href="https://www.instagram.com/godposeidon001/" class="text-pink-400 hover:text-pink-300"><i class="fab fa-instagram text-2xl"></i></a>
+            </div>
+            <p class="text-gray-400">Made with <i class="fas fa-heart text-pink-500 heartbeat"></i> for the love of my life</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuButton = document.getElementById('mobile-menu-button');
+            
+            if (!mobileMenu.contains(event.target) && !menuButton.contains(event.target) && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+        
+        // Love meter functionality
+        const loveForm = document.getElementById('love-quiz');
+        const resultCard = document.getElementById('result-card');
+        const retryButton = document.getElementById('retry-quiz');
+        const meterFill = document.getElementById('meter-fill');
+        const meterNeedle = document.getElementById('meter-needle');
+        const loveScore = document.getElementById('love-score');
+        const loveStatus = document.getElementById('love-status');
+        const resultTitle = document.getElementById('result-title');
+        const resultDescription = document.getElementById('result-description');
+        const strengthsList = document.getElementById('strengths-list');
+        const improvementsList = document.getElementById('improvements-list');
+        const quizProgress = document.getElementById('quiz-progress');
+        const statsSection = document.getElementById('love-stats');
+        
+        // Track current question for progress
+        let currentQuestion = 0;
+        const totalQuestions = 5;
+        let statsAnimated = false;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            quizProgress.style.width = `${progress}%`;
+        }
+        
+        // Highlight active question
+        function highlightActiveQuestion() {
+            document.querySelectorAll('.question-container').forEach((container, index) => {
+                if (index < currentQuestion) {
+                    container.classList.add('active');
+                } else {
+                    container.classList.remove('active');
+                }
+            });
+        }
+        
+        // Possible results based on score
+        const resultMessages = [
+            { 
+                min: 0, 
+                max: 20, 
+                title: "Just Getting Started", 
+                description: "Our love has potential but needs nurturing. Let's work on building a stronger connection!",
+                strengths: ["Willingness to try", "Honesty about feelings", "Openness to growth"],
+                improvements: ["Spend more quality time", "Improve communication", "Share more experiences"]
+            },
+            { 
+                min: 21, 
+                max: 40, 
+                title: "Growing Connection", 
+                description: "We're building something special. With time and effort, our love will continue to grow!",
+                strengths: ["Growing affection", "Shared interests", "Mutual respect"],
+                improvements: ["Deepen emotional connection", "Plan more activities together", "Express appreciation more often"]
+            },
+            { 
+                min: 41, 
+                max: 60, 
+                title: "Strong Bond", 
+                description: "We have a solid foundation of love and respect. Our relationship is strong and meaningful!",
+                strengths: ["Trust in each other", "Good communication", "Shared values"],
+                improvements: ["Keep the romance alive", "Try new things together", "Support each other's goals"]
+            },
+            { 
+                min: 61, 
+                max: 80, 
+                title: "Deeply Connected", 
+                description: "Our love is deep and meaningful. We understand and complement each other perfectly!",
+                strengths: ["Deep emotional connection", "Strong commitment", "Excellent communication"],
+                improvements: ["Maintain spontaneity", "Continue growing together", "Plan for the future"]
+            },
+            { 
+                min: 81, 
+                max: 100, 
+                title: "Soulmates", 
+                description: "We're meant to be together! Our connection is once-in-a-lifetime and will last forever.",
+                strengths: ["Unbreakable bond", "Complete trust", "Perfect understanding"],
+                improvements: ["Never take each other for granted", "Keep surprising one another", "Continue nurturing our love"]
+            }
+        ];
+        
+        // Handle form submission
+        loveForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Calculate score
+            let totalScore = 0;
+            const questions = document.querySelectorAll('input[type="radio"]:checked');
+            
+            if (questions.length < 5) {
+                alert("Please answer all questions to calculate our love score!");
+                return;
+            }
+            
+            questions.forEach(question => {
+                totalScore += parseInt(question.value);
+            });
+            
+            // Convert to percentage (max 50 points -> 100%)
+            const percentage = (totalScore / 50) * 100;
+            
+            // Update meter and display result
+            updateLoveMeter(percentage);
+            
+            // Show result after animation
+            setTimeout(() => {
+                showResult(percentage);
+                // Create confetti effect for scores above 50%
+                if (percentage > 50) {
+                    createConfetti();
+                }
+            }, 1500);
+        });
+        
+        // Update love meter visualization
+        function updateLoveMeter(percentage) {
+            // Cap percentage at 100
+            const finalPercentage = Math.min(percentage, 100);
+            
+            // Update fill height
+            meterFill.style.height = `${finalPercentage}%`;
+            
+            // Update needle rotation (-90deg to 90deg for 0% to 100%)
+            const rotation = (finalPercentage / 100) * 180 - 90;
+            meterNeedle.style.transform = `translateX(-50%) rotate(${rotation}deg)`;
+            
+            // Update score text
+            let currentPercentage = 0;
+            const interval = setInterval(() => {
+                if (currentPercentage >= finalPercentage) {
+                    clearInterval(interval);
+                    loveScore.textContent = `${Math.round(finalPercentage)}%`;
+                } else {
+                    currentPercentage++;
+                    loveScore.textContent = `${currentPercentage}%`;
+                }
+            }, 1500 / finalPercentage);
+        }
+        
+        // Show result based on score
+        function showResult(percentage) {
+            // Find appropriate message
+            const result = resultMessages.find(r => percentage >= r.min && percentage <= r.max);
+            
+            // Update result text
+            resultTitle.textContent = result.title;
+            resultDescription.textContent = result.description;
+            
+            // Update strengths and improvements lists
+            strengthsList.innerHTML = '';
+            result.strengths.forEach(strength => {
+                strengthsList.innerHTML += `<li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> ${strength}</li>`;
+            });
+            
+            improvementsList.innerHTML = '';
+            result.improvements.forEach(improvement => {
+                improvementsList.innerHTML += `<li class="flex items-center"><i class="fas fa-star text-yellow-500 mr-2"></i> ${improvement}</li>`;
+            });
+            
+            // Update status text
+            loveStatus.textContent = `${result.title} - ${Math.round(percentage)}%`;
+            
+            // Show result card
+            resultCard.classList.add('visible');
+            
+            // Add celebration animation for high scores
+            if (percentage > 70) {
+                resultTitle.classList.add('celebrate');
+                setTimeout(() => {
+                    resultTitle.classList.remove('celebrate');
+                }, 1500);
+            }
+        }
+        
+        // Retry quiz
+        retryButton.addEventListener('click', function() {
+            // Reset form
+            loveForm.reset();
+            
+            // Reset meter
+            meterFill.style.height = '0%';
+            meterNeedle.style.transform = 'translateX(-50%) rotate(-90deg)';
+            loveScore.textContent = '0%';
+            loveStatus.textContent = 'Take the quiz to measure our love!';
+            
+            // Hide result card
+            resultCard.classList.remove('visible');
+            
+            // Reset progress
+            currentQuestion = 0;
+            updateProgress();
+            highlightActiveQuestion();
+        });
+        
+        // Create confetti effect - FIXED VERSION
+        function createConfetti() {
+            const colors = ['#fd2d78', '#ff7bac', '#5c67de', '#ffaac9', '#ff6b6b', '#ffde59', '#6bde5c', '#5cc8de'];
+            const shapes = ['❤', '💕', '💖', '💗', '💓', '💘', '💞'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Random position
+                const left = Math.random() * 100;
+                confetti.style.left = `${left}vw`;
+                
+                // Random color or shape
+                if (Math.random() > 0.5) {
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 15 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 15 + 5) + 'px';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                } else {
+                    confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+                    confetti.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    confetti.style.width = 'auto';
+                    confetti.style.height = 'auto';
+                    confetti.style.backgroundColor = 'transparent';
+                }
+                
+                // Random animation
+                const animationType = Math.random() > 0.5 ? 'confettiFall' : 'confettiSide';
+                const animationDuration = Math.random() * 3 + 2;
+                
+                confetti.style.animation = `${animationType} ${animationDuration}s linear forwards`;
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation completes
+                setTimeout(() => {
+                    confetti.remove();
+                }, animationDuration * 1000);
+            }
+        }
+        
+        // Animate numbers counting up
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = typeof end === 'number' ? value.toLocaleString() : value + '%';
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // Update love stats with random variations and animate
+        function animateLoveStats() {
+            if (statsAnimated) return;
+            statsAnimated = true;
+            
+            // Compatibility factors with slight random variations
+            const communicationValue = 92 + Math.floor(Math.random() * 5) - 2;
+            const trustValue = 95 + Math.floor(Math.random() * 5) - 2;
+            const intimacyValue = 88 + Math.floor(Math.random() * 5) - 2;
+            const funValue = 96 + Math.floor(Math.random() * 5) - 2;
+            
+            // Animate progress bars
+            setTimeout(() => {
+                document.getElementById('communication-bar').style.width = `${communicationValue}%`;
+                document.getElementById('trust-bar').style.width = `${trustValue}%`;
+                document.getElementById('intimacy-bar').style.width = `${intimacyValue}%`;
+                document.getElementById('fun-bar').style.width = `${funValue}%`;
+            }, 100);
+            
+            // Animate numbers
+            animateValue(document.getElementById('communication-value'), 0, communicationValue, 1500);
+            animateValue(document.getElementById('trust-value'), 0, trustValue, 1500);
+            animateValue(document.getElementById('intimacy-value'), 0, intimacyValue, 1500);
+            animateValue(document.getElementById('fun-value'), 0, funValue, 1500);
+            
+            // Love timeline with random variations
+            const daysValue = 1520 + Math.floor(Math.random() * 101) - 50;
+            const memoriesValue = 867 + Math.floor(Math.random() * 51) - 25;
+            const adventuresValue = 93 + Math.floor(Math.random() * 11) - 5;
+            
+            // Animate numbers
+            animateValue(document.getElementById('days-value'), 0, daysValue, 1500);
+            animateValue(document.getElementById('memories-value'), 0, memoriesValue, 1500);
+            animateValue(document.getElementById('adventures-value'), 0, adventuresValue, 1500);
+        }
+        
+        // Track answered questions for progress
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const questionNumber = parseInt(this.name.replace('q', ''));
+                if (questionNumber > currentQuestion) {
+                    currentQuestion = questionNumber;
+                    updateProgress();
+                    highlightActiveQuestion();
+                }
+                
+                // Scroll to next question if not the last one
+                if (questionNumber < totalQuestions) {
+                    document.getElementById(`question-${questionNumber + 1}`).scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Intersection Observer for stats section animation
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.3
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    statsSection.classList.add('visible');
+                    animateLoveStats();
+                }
+            });
+        }, observerOptions);
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Observe the stats section
+            observer.observe(statsSection);
+            
+            // Initialize progress
+            updateProgress();
+            highlightActiveQuestion();
+        });
+    </script>
+</body>
+</html>

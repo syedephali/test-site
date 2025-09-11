@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Love Story</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #fd2d78;
+        --secondary: #5c67de;
+        --accent: #ffaac9;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .heading-font {
+        font-family: "Playfair Display", serif;
+      }
+
+      .timeline {
+        position: relative;
+        padding: 2rem 0;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        border-radius: 2px;
+      }
+
+      .timeline-item {
+        width: 50%;
+        padding: 1.5rem 2rem;
+        position: relative;
+        margin-bottom: 2rem;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease;
+      }
+
+      .timeline-item:nth-child(odd) {
+        left: 0;
+        padding-right: 4rem;
+      }
+
+      .timeline-item:nth-child(even) {
+        left: 50%;
+        padding-left: 4rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        top: 2rem;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        border: 4px solid var(--primary);
+        box-shadow: 0 0 0 3px white;
+        transition: all 0.3s ease;
+      }
+
+      .timeline-item:nth-child(odd)::before {
+        right: -10px;
+      }
+
+      .timeline-item:nth-child(even)::before {
+        left: -10px;
+      }
+
+      .timeline-item:hover::before {
+        transform: scale(1.2);
+        background: var(--primary);
+        border: 4px solid white;
+      }
+
+      .timeline-content {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .timeline-content:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      }
+
+      .timeline-date {
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .timeline-image {
+        width: 100%;
+        border-radius: 8px;
+        margin: 1rem 0;
+        background: linear-gradient(45deg, #ffaac9, #fd2d78);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-style: italic;
+        transition: all 0.3s ease;
+        overflow: hidden;
+      }
+
+      .timeline-image img {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        max-height: 350px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      .timeline-image:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .heartbeat {
+        animation: heartbeat 1.5s ease-in-out infinite both;
+      }
+
+      @keyframes heartbeat {
+        from {
+          transform: scale(1);
+          transform-origin: center center;
+          animation-timing-function: ease-out;
+        }
+        10% {
+          transform: scale(0.91);
+          animation-timing-function: ease-in;
+        }
+        17% {
+          transform: scale(0.98);
+          animation-timing-function: ease-out;
+        }
+        33% {
+          transform: scale(0.87);
+          animation-timing-function: ease-in;
+        }
+        45% {
+          transform: scale(1);
+          animation-timing-function: ease-out;
+        }
+      }
+
+      .floating {
+        animation-name: floating;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+
+      @keyframes floating {
+        0% {
+          transform: translate(0, 0px);
+        }
+        50% {
+          transform: translate(0, 15px);
+        }
+        100% {
+          transform: translate(0, -0px);
+        }
+      }
+
+      .nav-btn {
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .counter-section {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease-out;
+      }
+
+      .counter-section.animate {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .counter-item {
+        transition: all 0.5s ease;
+      }
+
+      .counter-item.animate {
+        transform: scale(1.05);
+      }
+
+      @media (max-width: 768px) {
+        .timeline::before {
+          left: 30px;
+        }
+
+        .timeline-item {
+          width: 100%;
+          padding-left: 70px;
+          padding-right: 25px;
+          left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+          left: 0;
+          padding-left: 70px;
+          padding-right: 25px;
+        }
+
+        .timeline-item::before {
+          left: 20px;
+        }
+
+        .timeline-item:nth-child(odd)::before,
+        .timeline-item:nth-child(even)::before {
+          left: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <a href="index.html" class="text-xl font-bold text-pink-600"
+            ><i class="fas fa-heart mr-2"></i> Our Love Story</a
+          >
+          <div class="hidden md:flex space-x-6">
+            <a href="index.html" class="text-gray-600 hover:text-pink-600"
+              >Home</a
+            >
+            <a href="story.html" class="text-pink-600 font-semibold"
+              >Our Story</a
+            >
+            <a href="memories.html" class="text-gray-600 hover:text-pink-600"
+              >Memories</a
+            >
+            <a href="love-meter.html" class="text-gray-600 hover:text-pink-600"
+              >Love Meter</a
+            >
+            <a href="future.html" class="text-gray-600 hover:text-pink-600"
+              >Future</a
+            >
+            <a href="messages.html" class="text-gray-600 hover:text-pink-600"
+              >Messages</a
+            >
+          </div>
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-600">
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden px-4 pt-2 pb-4 bg-white border-t">
+        <div class="flex flex-col space-y-3">
+          <a href="index.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Home</a
+          >
+          <a href="story.html" class="text-pink-600 font-semibold py-2"
+            >Our Story</a
+          >
+          <a href="memories.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Memories</a
+          >
+          <a
+            href="love-meter.html"
+            class="text-gray-600 hover:text-pink-600 py-2"
+            >Love Meter</a
+          >
+          <a href="future.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Future</a
+          >
+          <a href="messages.html" class="text-gray-600 hover:text-pink-600 py-2"
+            >Messages</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header
+      class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-16"
+    >
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold heading-font mb-4">
+          Our Beautiful Journey
+        </h1>
+        <p class="text-xl max-w-3xl mx-auto">
+          From strangers to friends, from friends to lovers, and now building a
+          future together.
+        </p>
+      </div>
+    </header>
+
+    <!-- Timeline Section -->
+    <section class="py-16">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Our Love Timeline
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Every moment with you has been a chapter in our beautiful story.
+            Here's how our love grew.
+          </p>
+        </div>
+
+        <div class="timeline">
+          <!-- Timeline Item 1 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span
+                class="timeline-date flex items-center mb-2 text-pink-500 font-medium"
+              >
+                <i class="far fa-calendar-alt mr-2"></i> December 31, 2024
+              </span>
+              <h3 class="text-xl font-bold mb-2">First Confession</h3>
+
+              <!-- Removed pink background -->
+              <div class="timeline-image mb-3">
+                <img
+                  src="images/story-1.JPG"
+                  alt="First photo together"
+                  class="rounded-xl shadow-md max-w-sm mx-auto object-cover"
+                />
+              </div>
+
+              <p class="text-gray-700">
+                I still remember the first time I confessed my feelings to you.
+                That night, I was overwhelmed with emotions, and I couldn’t hold
+                it in any longer. It was like something was eating me up inside,
+                and the weight of it all left me in tears the entire time.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 2 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span
+                class="timeline-date flex items-center mb-2 text-pink-500 font-medium"
+              >
+                <i class="far fa-calendar-alt mr-2"></i> January 1, 2025
+              </span>
+              <h3 class="text-xl font-bold mb-2">Day after Confession</h3>
+
+              <!-- Removed pink background -->
+              <div class="timeline-image mb-3">
+                <img
+                  src="images/story-2.JPG"
+                  alt="First photo together"
+                  class="rounded-xl shadow-md max-w-sm mx-auto object-cover"
+                />
+              </div>
+
+              <p class="text-gray-700">
+                As the sun set and darkness slowly swallowed the sky, I sat
+                beside you under that lamppost, tears silently streaming down my
+                face. The song punorjonmo was playing in my phone. In that moment, I knew the truth—that I would never have
+                what I wanted most. I would never have you. You would never be
+                mine, and you would never love me back. Thankfully, you didn’t
+                see the tears I tried so hard to hide that night.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 3 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span
+                class="timeline-date flex items-center mb-2 text-pink-500 font-medium"
+              >
+                <i class="far fa-calendar-alt mr-2"></i> January 13, 2025
+              </span>
+              <h3 class="text-xl font-bold mb-2">
+                Back at Shorobor, this time happier
+              </h3>
+
+              <!-- Removed pink background -->
+              <div class="timeline-image mb-3">
+                <img
+                  src="images/story-3.JPG"
+                  alt="First photo together"
+                  class="rounded-xl shadow-md max-w-sm mx-auto object-cover"
+                />
+              </div>
+
+              <p class="text-gray-700">
+                I returned to the place where I once cried so desperately, but
+                this time, you knew my feelings—and slowly, you began to accept
+                them. And for the first time, I felt a sense of peace.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 4 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span
+                class="timeline-date flex items-center mb-2 text-pink-500 font-medium"
+              >
+                <i class="far fa-calendar-alt mr-2"></i> January 29, 2025
+              </span>
+              <h3 class="text-xl font-bold mb-2">First Kiss</h3>
+
+              <!-- Removed pink background -->
+              <div class="timeline-image mb-3">
+                <img
+                  src="images/story-4.JPG"
+                  alt="First photo together"
+                  class="rounded-xl shadow-md max-w-sm mx-auto object-cover"
+                />
+              </div>
+
+              <p class="text-gray-700">
+                My heart raced as our lips met for the first time, a moment I
+                had dreamed of endlessly. The first kiss of my life, and it was
+                with you. In that fleeting instant, all my doubts and fears
+                vanished, leaving only the warmth of your embrace.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 5 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span
+                class="timeline-date flex items-center mb-2 text-pink-500 font-medium"
+              >
+                <i class="far fa-calendar-alt mr-2"></i> February 13, 2025
+              </span>
+              <h3 class="text-xl font-bold mb-2">First Date & First time You Said You Love Me.</h3>
+
+              <!-- Removed pink background -->
+              <div class="timeline-image mb-3">
+                <img
+                  src="images/story-5.JPG"
+                  alt="First photo together"
+                  class="rounded-xl shadow-md max-w-sm mx-auto object-cover"
+                />
+              </div>
+
+              <p class="text-gray-700">
+                Our first ever proper date, and the first time you said those three
+                magical words to me. I was over the moon. You looked so beautiful in that saree, and I felt like the luckiest person alive to be with you.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 6 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span
+                class="timeline-date flex items-center mb-2 text-pink-500 font-medium"
+              >
+                <i class="far fa-calendar-alt mr-2"></i> April 8, 2025
+              </span>
+              <h3 class="text-xl font-bold mb-2">First Time You Let Someone Put a Ring on Your Finger</h3>
+
+              <!-- Removed pink background -->
+              <div class="timeline-image mb-3">
+                <img
+                  src="images/story-6.JPG"
+                  alt="First photo together"
+                  class="rounded-xl shadow-md max-w-sm mx-auto object-cover"
+                />
+              </div>
+
+              <p class="text-gray-700">
+                The first time you let someone put a ring on your finger, and that someone was me. I felt like the happiest person alive. You looked so beautiful, and I couldn't stop staring at you.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 7 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span
+                class="timeline-date flex items-center mb-2 text-pink-500 font-medium"
+              >
+                <i class="far fa-calendar-alt mr-2"></i> May 25, 2025
+              </span>
+              <h3 class="text-xl font-bold mb-2">Your Proposal & Official Relationship</h3>
+
+              <!-- Removed pink background -->
+              <div class="timeline-image mb-3">
+                <img
+                  src="images/story-7.png"
+                  alt="First photo together"
+                  class="rounded-xl shadow-md max-w-sm mx-auto object-cover"
+                />
+              </div>
+
+              <p class="text-gray-700">
+                You proposed to me so suddenly, and I was so surprised. I never thought you would propose to me, but I was so happy. I said yes, and I couldn't stop smiling. 
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Memory Counter Section -->
+    <section id="love-numbers" class="py-16 bg-pink-50 counter-section">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Our Love in Numbers
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Every moment with you counts, and I've cherished each one.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div class="p-6 counter-item">
+            <div
+              class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
+              id="days-together"
+            >
+              0
+            </div>
+            <div class="text-gray-600">Days Together</div>
+          </div>
+
+          <div class="p-6 counter-item">
+            <div
+              class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
+              id="memories-count"
+            >
+              0
+            </div>
+            <div class="text-gray-600">Memories Made</div>
+          </div>
+
+          <div class="p-6 counter-item">
+            <div
+              class="text-lg lg:text-3xl font-bold text-pink-600 mb-2"
+              id="adventures-count"
+            >
+              0
+            </div>
+            <div class="text-gray-600">Adventures</div>
+          </div>
+
+          <div class="p-6 counter-item">
+            <div
+              class="text-4xl md:text-5xl font-bold text-pink-600 mb-2"
+              id="love-percent"
+            >
+              0%
+            </div>
+            <div class="text-gray-600">Pure Love</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Section -->
+    <section class="py-16">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">
+            Continue Our Journey
+          </h2>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Explore more of our story and memories
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <a
+            href="memories.html"
+            class="bg-white rounded-xl shadow-lg p-6 text-center nav-btn"
+          >
+            <div
+              class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-images text-pink-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Our Memories</h3>
+            <p class="text-gray-600">
+              Relive our precious moments together through our photo gallery
+            </p>
+          </a>
+
+          <a
+            href="love-meter.html"
+            class="bg-white rounded-xl shadow-lg p-6 text-center nav-btn"
+          >
+            <div
+              class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-heart text-pink-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Love Meter</h3>
+            <p class="text-gray-600">
+              Test our compatibility and see how perfect we are for each other
+            </p>
+          </a>
+
+          <a
+            href="future.html"
+            class="bg-white rounded-xl shadow-lg p-6 text-center nav-btn"
+          >
+            <div
+              class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <i class="fas fa-ring text-pink-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Future Together</h3>
+            <p class="text-gray-600">
+              Discover our plans and dreams for the life we'll build together
+            </p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="text-center">
+          <h3 class="text-2xl font-bold heading-font mb-4">Forever Yours</h3>
+          <p class="max-w-2xl mx-auto mb-6">
+            "I swear I couldn't love you more than I do right now, and yet I
+            know I will tomorrow."
+          </p>
+          <div class="flex justify-center space-x-4">
+            <a href="https://www.facebook.com/heavenly.yaksha001/" class="text-pink-400 hover:text-pink-300"
+              ><i class="fab fa-facebook text-2xl"></i
+            ></a>
+            <a href="https://www.instagram.com/godposeidon001/" class="text-pink-400 hover:text-pink-300"
+              ><i class="fab fa-instagram text-2xl"></i
+            ></a>
+          </div>
+          <p class="mt-8 text-gray-400">
+            Made with <i class="fas fa-heart text-pink-500"></i> for the love of
+            my life
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+  // Mobile menu toggle
+  document
+    .getElementById("mobile-menu-button")
+    .addEventListener("click", function () {
+      document.getElementById("mobile-menu").classList.toggle("hidden");
+    });
+
+  // Counter animation function with sudden text switch for adventures
+  function animateCounter(elementId, finalValue, duration, finalText = null, switchAt = null) {
+    let startTime = null;
+    const element = document.getElementById(elementId);
+    const startValue = 0;
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const value = Math.floor(progress * (finalValue - startValue) + startValue);
+
+      if (finalText && switchAt && value >= switchAt) {
+        element.textContent = finalText;
+        return; // stop animation immediately at text
+      }
+
+      element.textContent =
+        elementId === "love-percent" ? `${value}%` : value.toLocaleString();
+
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    }
+
+    window.requestAnimationFrame(step);
+  }
+
+  // Set up intersection observers for animations
+  function setupAnimations() {
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    // Observer for timeline items
+    const timelineObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          timelineObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll(".timeline-item").forEach((item) => {
+      timelineObserver.observe(item);
+    });
+
+    // Observer for counter section
+    const counterSectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate");
+
+          // Start counter animations
+          setTimeout(() => animateCounter("days-together", 538, 2000), 100);
+          setTimeout(() => animateCounter("memories-count", 538, 2000), 300);
+
+          // Adventures → count fast till 6 (original) or change to text if needed
+          // Example: count fast to 6 then switch to "Eternity Awaits"
+          setTimeout(
+            () =>
+              animateCounter(
+                "adventures-count",
+                500,
+                2000,
+                "Eternity Awaits", // text to switch
+                500 // switch at value
+              ),
+            500
+          );
+
+          setTimeout(() => animateCounter("love-percent", 100, 2500), 700);
+
+          // Animate counter items
+          document.querySelectorAll(".counter-item").forEach((item, index) => {
+            setTimeout(() => {
+              item.classList.add("animate");
+            }, 800 + index * 200);
+          });
+
+          counterSectionObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    const counterSection = document.getElementById("love-numbers");
+    if (counterSection) {
+      counterSectionObserver.observe(counterSection);
+    }
+  }
+
+  // Initialize animations when DOM is loaded
+  document.addEventListener("DOMContentLoaded", function () {
+    setupAnimations();
+  });
+</script>
+
+  </body>
+</html>

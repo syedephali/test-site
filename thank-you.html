@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You My Love | Our Love Story</title>
+    <script>
+      const accessTime = localStorage.getItem("access_granted");
+      const now = new Date().getTime();
+      const tenMinutes = 10 * 60 * 1000;
+
+      if (!accessTime || now - accessTime > tenMinutes) {
+        localStorage.removeItem("access_granted");
+        window.location.href = "index.html"; // redirect if no access or expired
+      }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #fd2d78;
+            --secondary: #5c67de;
+            --accent: #ffaac9;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .heading-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .thank-you-card {
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .thank-you-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-inner {
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .thank-you-card:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+        }
+        
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(45deg, #fd2d78, #ff7bac);
+            color: white;
+        }
+        
+        .floating-hearts {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            opacity: 0;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+        }
+        
+        @keyframes floatHearts {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0);
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--x), -100vh) scale(1.5);
+            }
+        }
+        
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite both;
+        }
+        
+        @keyframes heartbeat {
+            from {
+                transform: scale(1);
+                transform-origin: center center;
+                animation-timing-function: ease-out;
+            }
+            10% {
+                transform: scale(0.91);
+                animation-timing-function: ease-in;
+            }
+            17% {
+                transform: scale(0.98);
+                animation-timing-function: ease-out;
+            }
+            33% {
+                transform: scale(0.87);
+                animation-timing-function: ease-in;
+            }
+            45% {
+                transform: scale(1);
+                animation-timing-function: ease-out;
+            }
+        }
+        
+        .floating { 
+            animation-name: floating;
+            animation-duration: 3s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+        
+        @keyframes floating {
+            0% { transform: translate(0, 0px); }
+            50% { transform: translate(0, 15px); }
+            100% { transform: translate(0, -0px); } 
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid var(--primary);
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary) }
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .bounce-in {
+            animation: bounceIn 1s ease-out;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .thank-you-message {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .thank-you-message:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            background: var(--primary);
+        }
+        
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+        
+        .nav-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .interactive-heart {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .interactive-heart:hover {
+            transform: scale(1.2);
+            color: var(--primary);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fd2d78, #ff7bac);
+            width: 0%;
+            transition: width 2s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="main.html" class="text-xl font-bold text-pink-600"><i class="fas fa-heart mr-2"></i> Our Love Story</a>
+                <div class="hidden md:flex space-x-6">
+                    <a href="main.html" class="text-gray-600 hover:text-pink-600">Home</a>
+                    <a href="story.html" class="text-gray-600 hover:text-pink-600">Our Story</a>
+                    <a href="memories.html" class="text-gray-600 hover:text-pink-600">Memories</a>
+                    <a href="love-meter.html" class="text-gray-600 hover:text-pink-600">Love Meter</a>
+                    <a href="future.html" class="text-gray-600 hover:text-pink-600">Future</a>
+                    <a href="messages.html" class="text-gray-600 hover:text-pink-600">Messages</a>
+                    <a href="thank-you.html" class="text-pink-600 font-semibold">Thank You</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden px-4 pt-2 pb-4 bg-white border-t">
+            <div class="flex flex-col space-y-3">
+                <a href="main.html" class="text-gray-600 hover:text-pink-600 py-2">Home</a>
+                <a href="story.html" class="text-gray-600 hover:text-pink-600 py-2">Our Story</a>
+                <a href="memories.html" class="text-gray-600 hover:text-pink-600 py-2">Memories</a>
+                <a href="love-meter.html" class="text-gray-600 hover:text-pink-600 py-2">Love Meter</a>
+                <a href="future.html" class="text-gray-600 hover:text-pink-600 py-2">Future</a>
+                <a href="messages.html" class="text-gray-600 hover:text-pink-600 py-2">Messages</a>
+                <a href="thank-you.html" class="text-pink-600 font-semibold py-2">Thank You</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-16 relative overflow-hidden">
+        <div class="floating-hearts" id="hearts-container"></div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold heading-font mb-4">Thank You My Love</h1>
+            <p class="text-xl max-w-3xl mx-auto">For everything you are and everything you do</p>
+        </div>
+    </header>
+
+    <!-- Main Thank You Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">My Heartfelt Thanks</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Hover over each card to discover what I'm thankful for</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Thank You Card 1 -->
+                <div class="thank-you-card h-64">
+                    <div class="card-inner h-full">
+                        <div class="card-front bg-white rounded-xl shadow-lg p-6 flex flex-col items-center justify-center">
+                            <div class="text-4xl text-pink-600 mb-4">
+                                <i class="fas fa-smile"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-center">Your Smile</h3>
+                        </div>
+                        <div class="card-back rounded-xl">
+                            <p class="text-center">That lights up my world even on the darkest days</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thank You Card 2 -->
+                <div class="thank-you-card h-64">
+                    <div class="card-inner h-full">
+                        <div class="card-front bg-white rounded-xl shadow-lg p-6 flex flex-col items-center justify-center">
+                            <div class="text-4xl text-pink-600 mb-4">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-center">Your Love</h3>
+                        </div>
+                        <div class="card-back rounded-xl">
+                            <p class="text-center">That makes me feel like the luckiest person alive</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thank You Card 3 -->
+                <div class="thank-you-card h-64">
+                    <div class="card-inner h-full">
+                        <div class="card-front bg-white rounded-xl shadow-lg p-6 flex flex-col items-center justify-center">
+                            <div class="text-4xl text-pink-600 mb-4">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-center">Your Support</h3>
+                        </div>
+                        <div class="card-back rounded-xl">
+                            <p class="text-center">That encourages me to chase my dreams</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thank You Card 4 -->
+                <div class="thank-you-card h-64">
+                    <div class="card-inner h-full">
+                        <div class="card-front bg-white rounded-xl shadow-lg p-6 flex flex-col items-center justify-center">
+                            <div class="text-4xl text-pink-600 mb-4">
+                                <i class="fas fa-laugh"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-center">Your Laughter</h3>
+                        </div>
+                        <div class="card-back rounded-xl">
+                            <p class="text-center">That is my favorite sound in the whole world</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thank You Card 5 -->
+                <div class="thank-you-card h-64">
+                    <div class="card-inner h-full">
+                        <div class="card-front bg-white rounded-xl shadow-lg p-6 flex flex-col items-center justify-center">
+                            <div class="text-4xl text-pink-600 mb-4">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-center">Your Kindness</h3>
+                        </div>
+                        <div class="card-back rounded-xl">
+                            <p class="text-center">That you show to everyone around you</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thank You Card 6 -->
+                <div class="thank-you-card h-64">
+                    <div class="card-inner h-full">
+                        <div class="card-front bg-white rounded-xl shadow-lg p-6 flex flex-col items-center justify-center">
+                            <div class="text-4xl text-pink-600 mb-4">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-center">Your Presence</h3>
+                        </div>
+                        <div class="card-back rounded-xl">
+                            <p class="text-center">That makes every moment special</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Thank You Messages -->
+    <section class="py-16 bg-pink-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">Special Thank You</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Click on each message to reveal my gratitude</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="thank-you-message bg-white p-6 rounded-xl shadow-lg" data-message="For always knowing how to make me smile, even when I'm having a bad day.">
+                    <div class="flex items-center">
+                        <div class="interactive-heart text-2xl text-pink-600 mr-4">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <p class="font-semibold">For your thoughtfulness</p>
+                    </div>
+                </div>
+                
+                <div class="thank-you-message bg-white p-6 rounded-xl shadow-lg" data-message="For believing in me even when I don't believe in myself.">
+                    <div class="flex items-center">
+                        <div class="interactive-heart text-2xl text-pink-600 mr-4">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <p class="font-semibold">For your faith in me</p>
+                    </div>
+                </div>
+                
+                <div class="thank-you-message bg-white p-6 rounded-xl shadow-lg" data-message="For the way you listen to me, truly listen, and make me feel heard.">
+                    <div class="flex items-center">
+                        <div class="interactive-heart text-2xl text-pink-600 mr-4">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <p class="font-semibold">For your patience</p>
+                    </div>
+                </div>
+                
+                <div class="thank-you-message bg-white p-6 rounded-xl shadow-lg" data-message="For all the little things you do that show how much you care.">
+                    <div class="flex items-center">
+                        <div class="interactive-heart text-2xl text-pink-600 mr-4">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <p class="font-semibold">For your attention to detail</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gratitude Progress -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">My Gratitude Level for You</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">How thankful I am to have you in my life</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto bg-pink-50 p-8 rounded-xl shadow-lg">
+                <div class="mb-6">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-semibold">Thankful for you</span>
+                        <span id="gratitude-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="gratitude-progress"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-semibold">Appreciation for your love</span>
+                        <span id="love-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="love-progress"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-semibold">Grateful for our memories</span>
+                        <span id="memories-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="memories-progress"></div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button id="animate-progress" class="bg-pink-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-700 transition-colors">
+                        Show My Gratitude
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Heartfelt Letter -->
+    <section class="py-16 bg-pink-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">A Letter of Thanks</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">My heartfelt words of appreciation for you</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg love-letter">
+                <h3 class="text-2xl font-bold heading-font mb-6 text-center">My Dearest Love,</h3>
+                <p class="text-gray-700 mb-4">
+                    I don't think I could ever fully express how grateful I am to have you in my life. You've brought so much joy, love, and light into my world, and I thank you for every moment we've shared.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    Thank you for your patience when I'm stubborn, for your understanding when I'm confused, and for your support when I'm chasing my dreams. Thank you for the laughter we've shared and the comfort you've provided during difficult times.
+                </p>
+                <p class="text-gray-700 mb-4">
+                    Most of all, thank you for being you - the amazing, wonderful, beautiful person that you are. I appreciate every little thing about you, from the way your eyes light up when you're excited to the way you care for others.
+                </p>
+                <p class="text-gray-700">
+                    I will never stop being thankful that our paths crossed and that I get to call you mine.
+                </p>
+                <p class="text-right mt-8 font-semibold text-pink-600">With all my love and gratitude,<br>Your Forever Thankful Partner</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Thank You Generator -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold heading-font mb-4">Create Your Thank You</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Write a special thank you message for me</p>
+            </div>
+            
+            <div class="max-w-2xl mx-auto bg-pink-50 p-8 rounded-xl shadow-lg">
+                <form id="thank-you-form">
+                    <div class="mb-6">
+                        <label for="thankYouMessage" class="block text-gray-700 mb-2">Your Thank You Message</label>
+                        <textarea id="thankYouMessage" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="Write your thank you message here..."></textarea>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="bg-pink-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-700 transition-colors">
+                            Send Thank You
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="thank-you-output" class="mt-8 hidden p-6 bg-white rounded-lg shadow">
+                    <h3 class="text-xl font-bold mb-4">Your Thank You Message</h3>
+                    <p id="thank-you-text" class="text-gray-700"></p>
+                    <button id="create-confetti" class="mt-4 bg-pink-600 text-white px-4 py-2 rounded-full text-sm hover:bg-pink-700 transition-colors">
+                        Celebrate with Confetti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold heading-font mb-6">Continue Our Journey</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                Explore other aspects of our love story
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <a href="story.html" class="bg-white text-pink-600 px-6 py-3 rounded-full font-semibold nav-btn">Our Story</a>
+                <a href="memories.html" class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold nav-btn">Memories</a>
+                <a href="future.html" class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold nav-btn">Future Together</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-2xl font-bold heading-font mb-4">Forever Grateful</h3>
+            <p class="max-w-2xl mx-auto mb-6">"Thank you for being you and for allowing me to be me."</p>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="#" class="text-pink-400 hover:text-pink-300"><i class="fab fa-instagram text-2xl"></i></a>
+                <a href="#" class="text-pink-400 hover:text-pink-300"><i class="fab fa-facebook text-2xl"></i></a>
+                <a href="#" class="text-pink-400 hover:text-pink-300"><i class="fab fa-twitter text-2xl"></i></a>
+                <a href="#" class="text-pink-400 hover:text-pink-300"><i class="fab fa-tiktok text-2xl"></i></a>
+            </div>
+            <p class="text-gray-400">Made with <i class="fas fa-heart text-pink-500 heartbeat"></i> for the love of my life</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+        
+        // Create floating hearts in header
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts-container');
+            const colors = ['#fd2d78', '#ff7bac', '#5c67de', '#ffaac9', '#ff6b6b'];
+            
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-hearts';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.setProperty('--x', (Math.random() * 100 - 50) + 'vw');
+                
+                heart.style.animation = `floatHearts ${Math.random() * 10 + 10}s linear infinite`;
+                
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        // Interactive thank you messages
+        const thankYouMessages = document.querySelectorAll('.thank-you-message');
+        thankYouMessages.forEach(message => {
+            message.addEventListener('click', function() {
+                const messageText = this.getAttribute('data-message');
+                this.querySelector('p').textContent = messageText;
+                
+                // Create confetti effect
+                createConfetti(5);
+            });
+        });
+        
+        // Animate progress bars
+        document.getElementById('animate-progress').addEventListener('click', function() {
+            const gratitudeProgress = document.getElementById('gratitude-progress');
+            const loveProgress = document.getElementById('love-progress');
+            const memoriesProgress = document.getElementById('memories-progress');
+            
+            const gratitudePercent = document.getElementById('gratitude-percent');
+            const lovePercent = document.getElementById('love-percent');
+            const memoriesPercent = document.getElementById('memories-percent');
+            
+            gratitudeProgress.style.width = '100%';
+            loveProgress.style.width = '100%';
+            memoriesProgress.style.width = '100%';
+            
+            animateValue(gratitudePercent, 0, 100, 2000);
+            animateValue(lovePercent, 0, 100, 2000);
+            animateValue(memoriesPercent, 0, 100, 2000);
+            
+            // Create celebration confetti
+            createConfetti(20);
+        });
+        
+        // Animate value counter
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = value + '%';
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // Thank you form submission
+        document.getElementById('thank-you-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = document.getElementById('thankYouMessage').value;
+            
+            if (message.trim() !== '') {
+                document.getElementById('thank-you-text').textContent = message;
+                document.getElementById('thank-you-output').classList.remove('hidden');
+                
+                // Save to local storage
+                localStorage.setItem('thankYouMessage', message);
+                
+                // Reset form
+                this.reset();
+            }
+        });
+        
+        // Create confetti effect
+        function createConfetti(amount) {
+            const container = document.querySelector('body');
+            const colors = ['#fd2d78', '#ff7bac', '#5c67de', '#ffaac9', '#ff6b6b'];
+            
+            for (let i = 0; i < amount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                
+                const animationDuration = Math.random() * 3 + 2;
+                confetti.style.animation = `confettiFall ${animationDuration}s linear forwards`;
+                
+                container.appendChild(confetti);
+                
+                // Remove confetti after animation completes
+                setTimeout(() => {
+                    confetti.remove();
+                }, animationDuration * 1000);
+            }
+        }
+        
+        // Confetti button
+        document.getElementById('create-confetti').addEventListener('click', function() {
+            createConfetti(50);
+        });
+        
+        // Check for saved message on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            createHearts();
+            
+            const savedMessage = localStorage.getItem('thankYouMessage');
+            if (savedMessage) {
+                document.getElementById('thank-you-text').textContent = savedMessage;
+                document.getElementById('thank-you-output').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

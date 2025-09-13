@@ -33,6 +33,11 @@
         --accent: #ffaac9;
       }
 
+      html,
+      body {
+        overflow-x: clip; /* better than hidden for animations */
+      }
+
       body {
         font-family: "Inter", sans-serif;
         background: linear-gradient(to bottom right, #fff5f7, #f8f9ff);
@@ -438,7 +443,9 @@
           <a href="messages.html" class="text-gray-600 hover:text-pink-600 py-2"
             >Messages</a
           >
-          <a href="thank-you.html" class="text-gray-600 hover:text-pink-600 py-2"
+          <a
+            href="thank-you.html"
+            class="text-gray-600 hover:text-pink-600 py-2"
             >Thank You</a
           >
         </div>
